@@ -1,7 +1,32 @@
+# Python
+.venv/
 venv/
+__pycache__/
+*.pyc
+
+# Environment
 .env
+
+# Telethon Session
 *.session
 *.session-journal
-__pycache__/
+
+# Download
 downloads/
+
+# Log
 logs/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Baileys Session
+whatsappProd/sessions/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
