@@ -6,7 +6,7 @@ from pipeline.pipeline import MessagePipeline
 from services.logger import logger_service
 from services.whatsapp import process
 from services.database import database_service
-
+from services.translator import process_TL
 
 async def main():
 
@@ -14,10 +14,11 @@ async def main():
 
     pipeline.register(logger_service)
     pipeline.register(database_service)
+    pipeline.register(process_TL)
     pipeline.register(process)
 
     register_listener(client, pipeline)
-
+    
     me = await client.get_me()
 
     print(f"Login sebagai : {me.first_name}")

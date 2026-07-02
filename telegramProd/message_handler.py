@@ -52,8 +52,12 @@ async def process_new_message(event):
         ),
 
         sender=SenderInfo(
-            id=sender.id,
-            name=sender.first_name,
+            id=sender.id if sender else None,
+            name=(
+                getattr(sender, "first_name", None)
+                or getattr(sender, "title", None)
+                or "Unknown"
+            ),
             username=getattr(sender, "username", None)
         ),
 

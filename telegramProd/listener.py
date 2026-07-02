@@ -53,7 +53,7 @@ def register_listener(client, pipeline):
         #     event.raw_text
         # )
         message = await process_new_message(event)
-        await download_media(event)
+        # await download_media(event)
         print(f"[Listener] {message.message.type} diterima")
 
         await pipeline.process(message)
