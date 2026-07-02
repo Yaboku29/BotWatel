@@ -91,27 +91,54 @@ Alur kerja:
 
 # 📁 Struktur Project
 
-```
+```text
 BotWatel/
 │
 ├── app.py
+├── config.py
 ├── requirements.txt
 ├── README.md
 ├── .env
+├── .gitignore
+│
+├── database/
+│   └── database.py
+│
+├── formatter/
+│   ├── __init__.py
+│   └── telegram_formatter.py
+│
+├── models/
+│   ├── message.py
+│   └── outgoing_message.py
+│
+├── pipeline/
+│   └── pipeline.py
+│
+├── services/
+│   ├── database.py
+│   ├── logger.py
+│   └── whatsapp.py
 │
 ├── telegramProd/
+│   ├── __init__.py
 │   ├── client.py
 │   ├── downloader.py
 │   ├── listener.py
-│   ├── message_handler.py
-│   └── models/
+│   └── message_handler.py
+│
+├── tests/
+│   ├── test_api.py
+│   └── test_wa.py
+│
+├── utils/
 │
 ├── whatsappProd/
 │   ├── client.js
-│   ├── server.js
-│   ├── sender.py
 │   ├── package.json
 │   ├── package-lock.json
+│   ├── sender.py
+│   ├── server.js
 │   └── sessions/
 │
 ├── downloads/
