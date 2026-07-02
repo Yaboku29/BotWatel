@@ -2,13 +2,18 @@
 
 BotWatel adalah aplikasi bridge antara **Telegram** dan **WhatsApp** yang menggunakan akun pribadi (bukan Bot API).
 
-Saat ini BotWatel mampu:
+Saat ini **BotWatel** mampu:
 
-- Login menggunakan akun Telegram melalui Telethon.
-- Memonitor pesan Telegram secara realtime.
-- Mengunduh media yang diterima.
-- Menjalankan koneksi WhatsApp menggunakan Baileys.
-- Mengirim pesan teks ke WhatsApp melalui REST API.
+- Login menggunakan akun Telegram menggunakan **Telethon**.
+- Memonitor pesan Telegram secara realtime dari **DM**, **Group**, maupun **Channel** yang dipilih.
+- Memfilter sumber pesan berdasarkan **Chat ID** yang dikonfigurasi.
+- Mengunduh media Telegram secara otomatis.
+- Menjalankan koneksi WhatsApp menggunakan **Baileys**.
+- Mengirim pesan ke **WhatsApp Personal Chat**, **Group**, maupun **Community Announcement Group** melalui REST API.
+- Meneruskan **pesan teks**, **foto**, **video**, dan **dokumen** ke WhatsApp.
+- Mempertahankan caption pada media (foto dan video) saat diteruskan.
+- Menggunakan arsitektur **pipeline** yang modular sehingga mudah dikembangkan untuk formatter, logger, database, dan layanan lainnya.
+- Mengelola konfigurasi menggunakan file **`.env`**.
 
 Project ini dirancang agar nantinya menjadi **Telegram ↔ WhatsApp Bridge** yang dapat melakukan sinkronisasi pesan dua arah.
 
