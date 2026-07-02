@@ -317,8 +317,8 @@ POST /send
 - [x] Telegram → WhatsApp (Photo)
 - [x] Telegram → WhatsApp (Video)
 - [x] Telegram → WhatsApp (Document)
-- [] Telegram → WhatsApp (Voice)
-- [] Telegram → WhatsApp (GIF)
+- [ ] Telegram → WhatsApp (Voice)
+- [ ] Telegram → WhatsApp (GIF)
 
 ## Future
 
