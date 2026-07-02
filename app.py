@@ -23,6 +23,14 @@ async def main():
     print(f"Login sebagai : {me.first_name}")
     print("Bot sedang mendengarkan pesan...")
 
+    # async for dialog in client.iter_dialogs():
+
+    #     if "..." in dialog.name:
+    #         print("==========================")
+    #         print("Nama    :", dialog.name)
+    #         print("Chat ID :", dialog.id)
+    #         print("Entity  :", type(dialog.entity).__name__)
+
     await client.run_until_disconnected()
 
 

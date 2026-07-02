@@ -22,6 +22,13 @@ DATABASE_PATH = os.getenv(
     "database/botwatel.db"
 )
 
+# Telegram
+TELEGRAM_TARGET_CHATS = [
+    int(chat_id.strip())
+    for chat_id in os.getenv("TELEGRAM_TARGET_CHATS", "").split(",")
+    if chat_id.strip()
+]
+
 # Logging
 LOG_LEVEL = os.getenv(
     "LOG_LEVEL",

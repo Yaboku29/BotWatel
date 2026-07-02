@@ -5,10 +5,10 @@ from whatsappProd.sender import (
     send_document
 )
 
-from config import WA_TARGET_NUMBER
+from config import WA_COMMUNITY_ANNOUNCEMENT_NUMBER
 
 
-TARGET_NUMBER = WA_TARGET_NUMBER
+TARGET_NUMBER = WA_COMMUNITY_ANNOUNCEMENT_NUMBER
 
 
 async def process(message):
