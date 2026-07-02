@@ -10,17 +10,22 @@ def register_listener(client, pipeline):
     async def new_message(event):
 
         print("Pesan diterima")
+        
+        print(f"event.out = {event.out}")
+        print(f"event.is_private = {event.is_private}")
 
-        if event.out:
-            return
+        # if event.out:
+        #     print("Keluar karena event.out")
+        #     return
 
-        if not event.is_private:
-            return
+        # if not event.is_private:
+        #     print("Keluar karena bukan private")
+        #     return
 
         print(event.raw_text)
 
         send_text(
-            "6285xxxxxxxx",
+            "6285877507211",
             event.raw_text
         )
 
