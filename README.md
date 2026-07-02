@@ -283,10 +283,10 @@ POST /send
 
 - [x] Telegram → WhatsApp (Text)
 - [x] Telegram → WhatsApp (Photo)
-- [ ] Telegram → WhatsApp (Video)
-- [ ] Telegram → WhatsApp (Document)
-- [ ] Telegram → WhatsApp (Voice)
-- [ ] Telegram → WhatsApp (Sticker)
+- [x] Telegram → WhatsApp (Video)
+- [x] Telegram → WhatsApp (Document)
+- [x] Telegram → WhatsApp (Voice)
+- [x] Telegram → WhatsApp (GIF)
 
 ## Future
 
