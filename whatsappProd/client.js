@@ -48,6 +48,8 @@ class WhatsAppClient {
         if (connection === "open") {
             console.log("WhatsApp Connected");
             this.isReady = true;
+
+            await this.listGroups();
         }
 
         if (connection === "close") {
@@ -64,16 +66,26 @@ class WhatsAppClient {
         }
     }
 
-    async sendMessage({ number, type = "text", text, path, caption }) {
+    async sendMessage({
+        number,
+        community,
+        type = "text",
+        text,
+        path,
+        caption
+    }) {
 
         if (!this.sock || !this.isReady) {
             throw new Error("WhatsApp belum siap");
         }
 
-        const jid = number.includes("@s.whatsapp.net")
-            ? number
-            : `${number}@s.whatsapp.net`;
+        let jid;
 
+        if (number.endsWith("@g.us")) {
+            jid = number;
+        } else {
+            jid = `${number}@s.whatsapp.net`;
+        }
         switch (type) {
 
             case "text":
@@ -98,6 +110,25 @@ class WhatsAppClient {
                 throw new Error("Unsupported type: " + type);
         }
     }
+    async getAnnouncementGroup(subject) {
+
+        const groups = await this.sock.groupFetchAllParticipating();
+
+        for (const jid in groups) {
+
+            const group = groups[jid];
+
+            if (
+                group.subject === subject &&
+                group.isCommunityAnnounce === true
+            ) {
+                return jid;
+            }
+        }
+
+        return null;
+    }
+    
 }
 
 module.exports = new WhatsAppClient();

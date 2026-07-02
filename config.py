@@ -14,6 +14,7 @@ WA_API_URL = os.getenv(
     "WA_API_URL",
     "http://localhost:3000"
 )
+WA_COMMUNITY_ANNOUNCEMENT_NUMBER=os.getenv("WA_COMMUNITY_ANNOUNCEMENT_NUMBER")
 
 # Database
 DATABASE_PATH = os.getenv(

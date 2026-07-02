@@ -27,6 +27,9 @@ whatsappProd/sessions/
 # VSCode
 .vscode/
 
+# Data Sensitif
+list_group.txt
+
 # OS
 .DS_Store
 Thumbs.db
