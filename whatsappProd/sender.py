@@ -1,5 +1,4 @@
 import requests
-
 from config import WA_API_URL
 
 BASE_URL = WA_API_URL
@@ -13,24 +12,38 @@ def send(
     caption: str = ""
 ):
 
-    response = requests.post(
-        f"{BASE_URL}/send",
-        json={
-            "number": number,
-            "type": message_type,
-            "text": text,
-            "path": path,
-            "caption": caption
-        },
-        timeout=10
-    )
+    try:
+        response = requests.post(
+            f"{BASE_URL}/send",
+            json={
+                "number": number,
+                "type": message_type,
+                "text": text,
+                "path": path,
+                "caption": caption
+            },
+            timeout=10
+        )
 
-    response.raise_for_status()
+        response.raise_for_status()
+        return response.json()
 
-    return response.json()
+    except requests.exceptions.Timeout:
+        print("❌ WA API timeout")
+        return {"success": False, "error": "timeout"}
+
+    except requests.exceptions.RequestException as e:
+        print("❌ WA API error:", str(e))
+        return {"success": False, "error": str(e)}
 
 
+# ======================
+# TEXT
+# ======================
 def send_text(number: str, text: str):
+    if not text:
+        text = ""
+
     return send(
         number,
         "text",
@@ -38,7 +51,14 @@ def send_text(number: str, text: str):
     )
 
 
+# ======================
+# IMAGE
+# ======================
 def send_image(number: str, path: str, caption: str = ""):
+
+    if not path:
+        raise ValueError("path wajib untuk image")
+
     return send(
         number,
         "image",
@@ -47,7 +67,14 @@ def send_image(number: str, path: str, caption: str = ""):
     )
 
 
+# ======================
+# VIDEO
+# ======================
 def send_video(number: str, path: str, caption: str = ""):
+
+    if not path:
+        raise ValueError("path wajib untuk video")
+
     return send(
         number,
         "video",
@@ -56,7 +83,14 @@ def send_video(number: str, path: str, caption: str = ""):
     )
 
 
+# ======================
+# DOCUMENT
+# ======================
 def send_document(number: str, path: str):
+
+    if not path:
+        raise ValueError("path wajib untuk document")
+
     return send(
         number,
         "document",

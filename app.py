@@ -4,7 +4,7 @@ from telegramProd.listener import register_listener
 from pipeline.pipeline import MessagePipeline
 
 from services.logger import logger_service
-from services.whatsapp import whatsapp_service
+from services.whatsapp import process
 from services.database import database_service
 
 
@@ -14,7 +14,7 @@ async def main():
 
     pipeline.register(logger_service)
     pipeline.register(database_service)
-    pipeline.register(whatsapp_service)
+    pipeline.register(process)
 
     register_listener(client, pipeline)
 

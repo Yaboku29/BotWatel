@@ -1,115 +1,32 @@
+require("dotenv").config();
 const express = require("express");
-
-const startWhatsapp = require("./client");
+const whatsapp = require("./client");
 
 const app = express();
-
 app.use(express.json());
 
 (async () => {
 
-    const sock = await startWhatsapp();
+    await whatsapp.start();
 
-    app.post("/send", async (req, res) => {
+    app.post("/send", (req, res) => {
 
-        const {
-            number,
-            type,
-            text,
-            path,
-            caption
-        } = req.body;
+        res.json({ success: true, status: "queued" });
 
-        const jid = number + "@s.whatsapp.net";
-
-        try {
-
-            switch (type) {
-
-                case "text":
-
-                    await sock.sendMessage(
-                        jid,
-                        {
-                            text
-                        }
-                    );
-
-                    break;
-
-                case "image":
-
-                    await sock.sendMessage(
-                        jid,
-                        {
-                            image: {
-                                url: path
-                            },
-                            caption: caption || ""
-                        }
-                    );
-
-                    break;
-
-                case "video":
-
-                    await sock.sendMessage(
-                        jid,
-                        {
-                            video: {
-                                url: path
-                            },
-                            caption: caption || ""
-                        }
-                    );
-
-                    break;
-
-                case "document":
-
-                    await sock.sendMessage(
-                        jid,
-                        {
-                            document: {
-                                url: path
-                            },
-                            fileName: path.split(/[\\/]/).pop()
-                        }
-                    );
-
-                    break;
-
-                default:
-
-                    return res.status(400).json({
-                        success: false,
-                        message: "Unknown message type"
-                    });
-
-            }
-
-            res.json({
-                success: true
+        whatsapp.sendMessage(req.body)
+            .then(result => {
+                console.log("SEND OK");
+            })
+            .catch(err => {
+                console.error("SEND ERROR:", err.message);
             });
-
-        }
-        catch (err) {
-
-            console.error(err);
-
-            res.status(500).json({
-                success: false,
-                message: err.message
-            });
-
-        }
 
     });
 
-    app.listen(3000, () => {
+    const PORT = process.env.PORT || 3000;
 
-        console.log("API Running");
-
+    app.listen(PORT, () => {
+        console.log("API Running on port", PORT);
     });
 
 })();

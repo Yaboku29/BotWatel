@@ -7,20 +7,17 @@ const {
 
 const P = require("pino");
 const qrcode = require("qrcode-terminal");
+const fs = require("fs");
 
 class WhatsAppClient {
-
     constructor() {
-
         this.sock = null;
-
         this.state = null;
-
         this.saveCreds = null;
+        this.isReady = false;
     }
 
     async start() {
-
         const { state, saveCreds } =
             await useMultiFileAuthState("sessions");
 
@@ -28,98 +25,79 @@ class WhatsAppClient {
         this.saveCreds = saveCreds;
 
         await this.createSocket();
-
     }
 
     async createSocket() {
-
         this.sock = makeWASocket({
-
             auth: this.state,
-
             browser: Browsers.ubuntu("BotWatel"),
-
-            logger: P({
-                level: "info"
-            })
-
+            logger: P({ level: "silent" })
         });
 
-        this.sock.ev.on(
-            "creds.update",
-            this.saveCreds
-        );
-
-        this.sock.ev.on(
-            "connection.update",
-            this.handleConnection.bind(this)
-        );
-
+        this.sock.ev.on("creds.update", this.saveCreds);
+        this.sock.ev.on("connection.update", this.handleConnection.bind(this));
     }
 
     async handleConnection(update) {
-
-        const {
-            connection,
-            qr,
-            lastDisconnect
-        } = update;
+        const { connection, qr, lastDisconnect } = update;
 
         if (qr) {
-
-            qrcode.generate(qr, {
-                small: true
-            });
-
+            qrcode.generate(qr, { small: true });
         }
 
         if (connection === "open") {
-
             console.log("WhatsApp Connected");
-
+            this.isReady = true;
         }
 
         if (connection === "close") {
+            this.isReady = false;
 
             const status =
                 lastDisconnect?.error?.output?.statusCode;
 
-            console.log("Disconnected :", status);
+            console.log("Disconnected:", status);
 
-            if (
-                status === DisconnectReason.restartRequired
-            ) {
-
-                console.log("Restarting Socket...");
-
+            if (status === DisconnectReason.restartRequired) {
                 await this.createSocket();
-
             }
-
         }
-
     }
 
-    async sendText(number, text) {
+    async sendMessage({ number, type = "text", text, path, caption }) {
 
-        if (!this.sock) {
-
-            throw new Error("WhatsApp belum connect");
-
+        if (!this.sock || !this.isReady) {
+            throw new Error("WhatsApp belum siap");
         }
 
-        return await this.sock.sendMessage(
+        const jid = number.includes("@s.whatsapp.net")
+            ? number
+            : `${number}@s.whatsapp.net`;
 
-            number + "@s.whatsapp.net",
+        switch (type) {
 
-            {
-                text
-            }
+            case "text":
+                return await this.sock.sendMessage(jid, {
+                    text: text || ""
+                });
 
-        );
+            case "image":
 
+                if (!fs.existsSync(path)) {
+                    throw new Error("File tidak ditemukan: " + path);
+                }
+
+                const buffer = fs.readFileSync(path);
+
+                return await this.sock.sendMessage(jid, {
+                    image: buffer,
+                    caption: caption || ""
+                });
+
+            default:
+                throw new Error("Unsupported type: " + type);
+        }
     }
-
 }
 
 module.exports = new WhatsAppClient();
