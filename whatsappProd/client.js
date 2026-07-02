@@ -48,8 +48,6 @@ class WhatsAppClient {
         if (connection === "open") {
             console.log("WhatsApp Connected");
             this.isReady = true;
-
-            await this.listGroups();
         }
 
         if (connection === "close") {
@@ -110,24 +108,24 @@ class WhatsAppClient {
                 throw new Error("Unsupported type: " + type);
         }
     }
-    async getAnnouncementGroup(subject) {
+    // async getAnnouncementGroup(subject) {
 
-        const groups = await this.sock.groupFetchAllParticipating();
+    //     const groups = await this.sock.groupFetchAllParticipating();
 
-        for (const jid in groups) {
+    //     for (const jid in groups) {
 
-            const group = groups[jid];
+    //         const group = groups[jid];
 
-            if (
-                group.subject === subject &&
-                group.isCommunityAnnounce === true
-            ) {
-                return jid;
-            }
-        }
+    //         if (
+    //             group.subject === subject &&
+    //             group.isCommunityAnnounce === true
+    //         ) {
+    //             return jid;
+    //         }
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
     
 }
 
