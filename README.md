@@ -1,105 +1,5 @@
 # BotWatel
 
-BotWatel adalah aplikasi Python yang menggunakan **Telethon** untuk memonitor pesan Telegram menggunakan akun pribadi, kemudian menyimpan media yang diterima ke dalam folder lokal. Proyek ini dirancang agar nantinya dapat dikembangkan menjadi **Telegram → WhatsApp Bridge**.
-
----
-
-## Fitur
-
-- Login menggunakan akun Telegram pribadi
-- Menerima seluruh pesan baru secara realtime
-- Menampilkan informasi pesan
-  - Nama chat
-  - Chat ID
-  - Pengirim
-  - Username
-  - Message ID
-  - Waktu
-  - Jenis pesan
-  - Isi pesan
-- Mengunduh media secara otomatis
-- Menyimpan media berdasarkan:
-  - Nama chat
-  - Tahun
-  - Bulan
-  - Tanggal
-
-Contoh struktur folder hasil download:
-
-downloads/
-```
-Nama Grup/
-└── 2026/
-└── 07/
-└── 01/
-├── photo.jpg
-├── document.pdf
-└── video.mp4
-```
-
----
-
-## Requirement
-
-- Python 3.11+
-- Telegram API ID
-- Telegram API Hash
-
----
-
-## Instalasi
-
-### Clone repository
-
-```bash
-git clone https://github.com/username/BotWatel.git
-
-cd BotWatel
-```
-
----
-
-### Buat Virtual Environment
-
-Windows
-
-```bash
-python -m venv .venv
-```
-
-Aktifkan
-
-```bash
-.venv\Scripts\activate
-```
-
-Linux / Mac
-
-```bash
-python3 -m venv .venv
-
-source .venv/bin/activate
-```
-
----
-
-### Install dependency
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Membuat API Telegram
-
-Masuk ke
-
-https://my.telegram.org
-
-Login menggunakan nomor Telegram.
-# BotWatel
-
 BotWatel adalah aplikasi bridge antara **Telegram** dan **WhatsApp** yang menggunakan akun pribadi (bukan Bot API).
 
 Saat ini BotWatel mampu:
@@ -132,230 +32,64 @@ Project ini dirancang agar nantinya menjadi **Telegram ↔ WhatsApp Bridge** yan
                 WhatsApp
 ```
 
-Python bertugas membaca pesan Telegram.
 
-Node.js bertugas mengelola koneksi WhatsApp.
-
-Keduanya saling berkomunikasi melalui HTTP API.
+Alur kerja:
+1. Telegram menerima pesan
+2. Python (Telethon) memproses dan mendownload media
+3. Python mengirim data ke REST API Node.js
+4. Node.js meneruskan ke WhatsApp via Baileys
 
 ---
 
-# Fitur
+# 🚀 Fitur
 
-## Telegram
+## 📩 Telegram (Python - Telethon)
 
 - Login menggunakan akun Telegram pribadi
-- Mendengarkan pesan secara realtime
-- Mengambil informasi pesan
-- Download media secara otomatis
-- Menyimpan media berdasarkan:
-    - Nama Chat
-    - Tahun
-    - Bulan
-    - Tanggal
+- Listener pesan realtime
+- Mendapatkan metadata pesan:
+  - Nama chat
+  - Pengirim
+  - Username
+  - Message type
+  - Waktu pesan
+- Download media otomatis
+- Struktur penyimpanan rapi:
+  - Nama Chat
+  - Tahun / Bulan / Tanggal
+- Support:
+  - Text
+  - Photo
+  - Video
+  - Document
 
-## WhatsApp
+---
 
-- Login menggunakan akun WhatsApp pribadi
+## 📱 WhatsApp (Node.js - Baileys)
+
+- Login via QR Code
 - REST API menggunakan Express
-- Mengirim pesan teks ke WhatsApp
+- Kirim pesan:
+  - Text
+  - Image (file lokal)
+  - Video (file lokal)
+  - Document (file lokal)
+- Auto reconnect socket
+- Session persistent (`sessions/`)
+- Logging koneksi
 
 ---
 
-# Requirement
+## 🔗 Bridge System
 
-- Python 3.11+
-- Node.js 20+
-- Telegram API ID
-- Telegram API Hash
-- Akun WhatsApp
-
----
-
-# Instalasi
-
-## Clone Repository
-
-```bash
-git clone https://github.com/username/BotWatel.git
-
-cd BotWatel
-```
+- Telegram → WhatsApp forwarding
+- Kirim text dari Telegram ke WhatsApp
+- Kirim media Telegram ke WhatsApp
+- File lokal hasil download langsung dikirim ke WhatsApp
 
 ---
 
-## Membuat Virtual Environment
-
-Windows
-
-```bash
-python -m venv .venv
-```
-
-Aktifkan
-
-```bash
-.venv\Scripts\activate
-```
-
-Linux / Mac
-
-```bash
-python3 -m venv .venv
-
-source .venv/bin/activate
-```
-
----
-
-## Install Dependency Python
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Install Dependency WhatsApp
-
-Masuk ke folder
-
-```bash
-cd whatsappProd
-```
-
-Kemudian install package Node.js
-
-```bash
-npm install
-```
-
----
-
-# Membuat Telegram API
-
-Masuk ke
-
-https://my.telegram.org
-
-Login menggunakan nomor Telegram.
-
-Pilih
-
-```
-API Development Tools
-```
-
-Kemudian buat aplikasi baru.
-
-Catat:
-
-- API ID
-- API Hash
-
----
-
-# Konfigurasi
-
-Buat file
-
-```
-.env
-```
-
-Isi dengan
-
-```env
-API_ID=12345678
-API_HASH=xxxxxxxxxxxxxxxxxxxxxxxx
-```
-
----
-
-# Menjalankan Program
-
-BotWatel terdiri dari dua service.
-
-## 1. Jalankan WhatsApp API
-
-Masuk ke folder
-
-```bash
-cd whatsappProd
-```
-
-Kemudian jalankan
-
-```bash
-node server.js
-```
-
-Saat pertama kali dijalankan akan muncul QR Code.
-
-Scan menggunakan
-
-```
-WhatsApp
-↓
-
-Perangkat Tertaut
-
-↓
-
-Tautkan Perangkat
-```
-
-Setelah berhasil login, credential akan disimpan pada folder
-
-```
-whatsappProd/sessions/
-```
-
-Sehingga tidak perlu scan ulang setiap menjalankan aplikasi.
-
----
-
-## 2. Jalankan Telegram Listener
-
-Buka terminal baru.
-
-Aktifkan Virtual Environment.
-
-Kemudian jalankan
-
-```bash
-python app.py
-```
-
-Saat pertama kali dijalankan akan diminta
-
-```
-Phone Number
-```
-
-Masukkan nomor Telegram.
-
-Kemudian
-
-```
-Login Code
-```
-
-Jika menggunakan Two-Step Verification
-
-```
-Password
-```
-
-Setelah berhasil login akan terbentuk file
-
-```
-watel.session
-```
-
----
-
-# Struktur Project
+# 📁 Struktur Project
 
 ```
 BotWatel/
@@ -384,8 +118,90 @@ BotWatel/
 │
 └── logs/
 ```
+---
+
+# Teknologi yang Digunakan
+Python
+- Telethon
+- Requests
+- python-dotenv
+
+Node.js
+- Express
+- Baileys
+- Pino
+- qrcode-terminal
 
 ---
+
+# ⚙️ Instalasi
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/username/BotWatel.git
+cd BotWatel
+```
+## 2. Setup Python Environment
+```bash
+python -m venv .venv
+.venv\Scripts\activate   # Windows
+```
+Install depedency
+```bash
+pip install -r requirements.txt
+```
+## 3. Setup Node.js (Whatsapp Service)
+Masuk folder:
+```bash
+cd whatsappProd
+```
+Install depedency
+```bash
+npm install
+```
+## Konfigurasi Telegram
+buat file .env:
+```env
+API_ID=12345678
+API_HASH=xxxxxxxxxxxxxxxxxxxx 
+```
+Dapatkan dari:
+https://my.telegram.org/
+
+---
+
+# Cara Menjalankan
+## 1. Jalankan Whatsapp Service
+```bash
+cd whatsappProd
+node server.js
+```
+Scan QR Code:
+```
+Whatsapp -> Perangkat Tertaut -> Tautkan Perangkat
+```
+Session akan tersimpan di:
+```
+whatsappProd/sessions/
+```
+## 2. Jalankan Telegram Listener
+Gunakan terminal yang berbeda dan jalankan:
+```bash
+python app.py
+```
+Login Telegram:
+- Nomor HP
+- OTP Code
+- Password (Jika 2FA aktif)
+
+Session tersimpan:
+```
+watel.session
+```
+
+---
+
 
 # Download Media
 
@@ -413,55 +229,40 @@ Nama Chat/
 
 # REST API
 
-## Mengirim Pesan
+## Mengirim Pesan/Endpoint
 
 ```
 POST /send
 ```
 
-Body
+## Text Message
 
 ```json
 {
-    "number":"628123456789",
-    "text":"Halo dari BotWatel"
+  "number": "628123456789",
+  "type": "text",
+  "text": "Halo dari BotWatel"
 }
 ```
 
-Response
+## Image Message (Local File)
+```json
+{
+  "number": "628123456789",
+  "type": "image",
+  "path": "C:/BotWatel/downloads/photo.jpg",
+  "caption": "dari Telegram"
+}
+```
+
+## Response
 
 ```json
 {
-    "success": true
+  "success": true,
+  "status": "queued"
 }
 ```
-
----
-
-# Dependency
-
-## Python
-
-- Telethon
-- python-dotenv
-- requests
-
-Install
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Node.js
-
-Install
-
-```bash
-npm install
-```
-
 ---
 
 # Roadmap
@@ -480,8 +281,8 @@ npm install
 
 ## Bridge
 
-- [ ] Telegram → WhatsApp (Text)
-- [ ] Telegram → WhatsApp (Photo)
+- [x] Telegram → WhatsApp (Text)
+- [x] Telegram → WhatsApp (Photo)
 - [ ] Telegram → WhatsApp (Video)
 - [ ] Telegram → WhatsApp (Document)
 - [ ] Telegram → WhatsApp (Voice)
@@ -504,151 +305,3 @@ Project ini menggunakan **akun pribadi Telegram** dan **akun pribadi WhatsApp**.
 BotWatel **bukan** menggunakan Telegram Bot API maupun WhatsApp Cloud API.
 
 Koneksi WhatsApp menggunakan **Baileys**, sehingga perubahan pada protokol WhatsApp sewaktu-waktu dapat memengaruhi proses login maupun pengiriman pesan.
-Pilih
-
-```
-API Development Tools
-```
-
-Kemudian buat aplikasi baru.
-
-Catat:
-
-- API ID
-- API Hash
-
----
-
-## Konfigurasi
-
-Buat file
-
-```
-.env
-```
-
-Isi dengan
-
-```env
-API_ID=12345678
-API_HASH=xxxxxxxxxxxxxxxxxxxxxxxx
-```
-
----
-
-## Menjalankan Program
-
-```bash
-python app.py
-```
-
-Saat pertama kali dijalankan akan diminta:
-
-```
-Phone Number
-```
-
-Masukkan nomor Telegram.
-
-Setelah itu masukkan:
-
-```
-Login Code
-```
-
-Jika menggunakan Two-Step Verification:
-
-```
-Password
-```
-
-Setelah berhasil login akan muncul file:
-
-```
-watel.session
-```
-
-File ini digunakan agar tidak perlu login ulang setiap menjalankan program.
-
----
-
-## Struktur Project
-
-```
-BotWatel/
-│
-├── app.py
-├── .env
-├── README.md
-├── downloads/
-│
-└── telegramProd/
-    ├── client.py
-    ├── downloader.py
-    ├── listener.py
-```
-
----
-
-## Output Contoh
-
-```
-============================================================
-
-Chat Name : Belajar Python
-Chat ID   : -1001234567890
-
-Sender    : Rizky
-
-Username  : @rizky
-
-Message ID : 1234
-
-Time       : 2026-07-01 20:30
-
-Type       : Photo
-
-TEXT
-
-Halo semua
-
-Saved File
-
-downloads/
-Belajar Python/
-2026/
-07/
-01/
-photo.jpg
-
-============================================================
-```
-
----
-
-## Dependency
-
-```
-Telethon
-python-dotenv
-```
-
-atau install menggunakan
-
-```bash
-pip install telethon python-dotenv
-```
-
----
-
-## Roadmap
-
-- [x] Login menggunakan akun Telegram
-- [x] Menerima pesan realtime
-- [x] Download media
-- [ ] Forward pesan ke WhatsApp
-- [ ] Auto Reply WhatsApp
-- [ ] Database SQLite
-- [ ] Logging
-- [ ] GUI Dashboard
-- [ ] Docker Support
