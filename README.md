@@ -20,14 +20,6 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 ---
 
 ## 🏗️ Arsitektur Sistem
-
-
-```text
-File README.md berhasil dibuat dengan sukses!
-
-
-```
-
 ```
             Telegram Chat
                   │
@@ -39,10 +31,8 @@ File README.md berhasil dibuat dengan sukses!
                   │
                   ▼
             WhatsApp Chat
-
 ```
 
-```
 
 ---
 
