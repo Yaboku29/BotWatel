@@ -61,10 +61,10 @@ BotWatel/
 │   ├── translator.py
 │   └── whatsapp.py
 └── whatsappProd/           # Modul WhatsApp (Server Node.js & REST API Driver)
-├── client.js
-├── package.json
-├── sender.py
-└── server.js
+    ├── client.js
+    ├── package.json
+    ├── sender.py
+    └── server.js
 
 ```
 
