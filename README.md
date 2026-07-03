@@ -60,6 +60,11 @@ BotWatel/
 │   ├── logger.py
 │   ├── translator.py
 │   └── whatsapp.py
+├── telegramProd/           # Modul Telegram Engine (Client, Listener, Downloader, Handler)
+│   ├── client.py
+│   ├── downloader.py
+│   ├── listener.py
+│   └── message_handler.py
 └── whatsappProd/           # Modul WhatsApp (Server Node.js & REST API Driver)
     ├── client.js
     ├── package.json
