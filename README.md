@@ -11,7 +11,7 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 - **Userbot Engine:** Berjalan menggunakan akun Telegram pribadi (via Telethon) dan WhatsApp pribadi (via Baileys).
 - **Realtime Listener:** Memonitor pesan masuk dari DM (Private Chat), Group, maupun Channel Telegram secara instan.
 - **Target Filtering:** Memfilter sumber pesan masuk berdasarkan Chat ID Telegram yang dikonfigurasi pada file `.env`.
-- **Auto-Download Media:** Mengunduh media Telegram otomatis (Foto, Video, Dokumen, Voice(SOON), Audio(SOON), Sticker(SOON), GIF(SOON)) dan menyimpannya ke folder lokal.
+- **Auto-Download Media:** Mengunduh media Telegram otomatis (Foto, Video, Dokumen, Voice (*SOON*), Audio (*SOON*), Sticker (*SOON*), GIF (*SOON*)) dan menyimpannya ke folder lokal.
 - **Pipeline Architecture:** Menggunakan pola desain modular (*Chain of Responsibility*) sehingga mempermudah penambahan layanan baru (Logger, DB, Translator, Formatter).
 - **Realtime Translation:** Mendeteksi bahasa asing otomatis dan menerjemahkannya ke bahasa Inggris via Google Translate sebelum dikirim ke WhatsApp.
 - **Media Caption:** Mempertahankan teks caption asli pada media (foto/video) saat diteruskan.
