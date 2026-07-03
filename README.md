@@ -1,339 +1,220 @@
-# BotWatel
+# BotWatel 📨
 
-BotWatel adalah aplikasi bridge antara **Telegram** dan **WhatsApp** yang menggunakan akun pribadi (bukan Bot API).
+BotWatel adalah aplikasi bridge (penghubung) otomatis antara **Telegram** dan **WhatsApp** yang memanfaatkan akun pribadi (Userbot). Proyek ini bekerja secara bebas tanpa memerlukan Bot API resmi dari kedua platform tersebut.
 
-Saat ini **BotWatel** mampu:
-
-- Login menggunakan akun Telegram menggunakan **Telethon**.
-- Memonitor pesan Telegram secara realtime dari **DM**, **Group**, maupun **Channel** yang dipilih.
-- Memfilter sumber pesan berdasarkan **Chat ID** yang dikonfigurasi.
-- Mengunduh media Telegram secara otomatis.
-- Menjalankan koneksi WhatsApp menggunakan **Baileys**.
-- Mengirim pesan ke **WhatsApp Personal Chat**, **Group**, maupun **Community Announcement Group** melalui REST API.
-- Meneruskan **pesan teks**, **foto**, **video**, dan **dokumen** ke WhatsApp.
-- Mempertahankan caption pada media (foto dan video) saat diteruskan.
-- Menggunakan arsitektur **pipeline** yang modular sehingga mudah dikembangkan untuk formatter, logger, database, dan layanan lainnya.
-- Mengelola konfigurasi menggunakan file **`.env`**.
-
-Project ini dirancang agar nantinya menjadi **Telegram ↔ WhatsApp Bridge** yang dapat melakukan sinkronisasi pesan dua arah.
+Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk meneruskan berbagai pesan secara realtime.
 
 ---
 
-# Arsitektur
+## ✨ Fitur Utama
 
-```
-                Telegram
-                    │
-                    ▼
-          Telethon (Python)
-                    │
-                    ▼
-            HTTP REST API
-                    │
-                    ▼
-       Express + Baileys (Node.js)
-                    │
-                    ▼
-                WhatsApp
-```
-
-
-Alur kerja:
-1. Telegram menerima pesan
-2. Python (Telethon) memproses dan mendownload media
-3. Python mengirim data ke REST API Node.js
-4. Node.js meneruskan ke WhatsApp via Baileys
+- **Userbot Engine:** Berjalan menggunakan akun Telegram pribadi (via Telethon) dan WhatsApp pribadi (via Baileys).
+- **Realtime Listener:** Memonitor pesan masuk dari DM (Private Chat), Group, maupun Channel Telegram secara instan.
+- **Target Filtering:** Memfilter sumber pesan masuk berdasarkan Chat ID Telegram yang dikonfigurasi pada file `.env`.
+- **Auto-Download Media:** Mengunduh media Telegram otomatis (Foto, Video, Dokumen, Voice, Audio, Sticker, GIF) dan menyimpannya ke folder lokal.
+- **Pipeline Architecture:** Menggunakan pola desain modular (*Chain of Responsibility*) sehingga mempermudah penambahan layanan baru (Logger, DB, Translator, Formatter).
+- **Realtime Translation:** Mendeteksi bahasa asing otomatis dan menerjemahkannya ke bahasa Inggris via Google Translate sebelum dikirim ke WhatsApp.
+- **Media Caption:** Mempertahankan teks caption asli pada media (foto/video) saat diteruskan.
+- **Non-Blocking REST API:** Mengirim pesan via HTTP POST ke server Node.js dengan sistem antrean latar belakang (*queued*) agar performa Python tetap responsif.
 
 ---
 
-# 🚀 Fitur
+## 🏗️ Arsitektur Sistem
 
-## 📩 Telegram (Python - Telethon)
-
-- Login menggunakan akun Telegram pribadi
-- Listener pesan realtime
-- Mendapatkan metadata pesan:
-  - Nama chat
-  - Pengirim
-  - Username
-  - Message type
-  - Waktu pesan
-- Download media otomatis
-- Struktur penyimpanan rapi:
-  - Nama Chat
-  - Tahun / Bulan / Tanggal
-- Support:
-  - Text
-  - Photo
-  - Video
-  - Document
-
----
-
-## 📱 WhatsApp (Node.js - Baileys)
-
-- Login via QR Code
-- REST API menggunakan Express
-- Kirim pesan:
-  - Text
-  - Image (file lokal)
-  - Video (file lokal)
-  - Document (file lokal)
-- Auto reconnect socket
-- Session persistent (`sessions/`)
-- Logging koneksi
-
----
-
-## 🔗 Bridge System
-
-- Telegram → WhatsApp forwarding
-- Kirim text dari Telegram ke WhatsApp
-- Kirim media Telegram ke WhatsApp
-- File lokal hasil download langsung dikirim ke WhatsApp
-
----
-
-# 📁 Struktur Project
 
 ```text
+File README.md berhasil dibuat dengan sukses!
+
+
+```
+
+```
+            Telegram Chat
+                  │
+                  ▼
+          Telethon (Python)
+                  │ (HTTP POST JSON)
+                  ▼
+      Express API + Baileys (Node.js)
+                  │
+                  ▼
+            WhatsApp Chat
+
+```
+
+```
+
+---
+
+## 📂 Struktur Properti & Folder
+
+
+```
+
 BotWatel/
-│
-├── app.py
-├── config.py
-├── requirements.txt
-├── README.md
-├── .env
-├── .gitignore
-│
-├── database/
-│   └── database.py
-│
-├── formatter/
-│   ├── __init__.py
+├── .env                    # File konfigurasi kredensial & environment variable
+├── app.py                  # Entry point utama aplikasi Python
+├── config.py               # Pengelola konfigurasi & pemetaan variabel .env
+├── requirements.txt        # Daftar dependensi library Python
+├── database/               # Folder penyimpanan SQLite database (botwatel.db)
+├── downloads/              # Folder penyimpanan media dari Telegram (diatur otomatis)
+├── formatter/              # Modul penyusun tampilan teks laporan pesan
 │   └── telegram_formatter.py
-│
-├── models/
+├── models/                 # Definisi struktur objek data (Dataclasses Python)
 │   ├── message.py
 │   └── outgoing_message.py
-│
-├── pipeline/
+├── pipeline/               # Arsitektur orkestrasi berantai pemrosesan pesan
 │   └── pipeline.py
-│
-├── services/
+├── services/               # Layanan pipeline (Logger, DB, Translator, WhatsApp Sender)
 │   ├── database.py
 │   ├── logger.py
+│   ├── translator.py
 │   └── whatsapp.py
-│
-├── telegramProd/
-│   ├── __init__.py
-│   ├── client.py
-│   ├── downloader.py
-│   ├── listener.py
-│   └── message_handler.py
-│
-├── tests/
-│   ├── test_api.py
-│   └── test_wa.py
-│
-├── utils/
-│
-├── whatsappProd/
-│   ├── client.js
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── sender.py
-│   ├── server.js
-│   └── sessions/
-│
-├── downloads/
-│
-└── logs/
+└── whatsappProd/           # Modul WhatsApp (Server Node.js & REST API Driver)
+├── client.js
+├── package.json
+├── sender.py
+└── server.js
+
 ```
+
+### Aturan Penyimpanan Media
+Media yang diunduh dari Telegram akan otomatis tersimpan dengan struktur folder absolut berbasis nama chat dan waktu:
+
+```
+
+downloads/
+└── [Nama Chat]/
+└── [Tahun]/
+└── [Bulan]/
+└── [Tanggal]/
+├── photo.jpg
+└── video.mp4
+
+```
+
 ---
 
-# Teknologi yang Digunakan
-Python
-- Telethon
-- Requests
-- python-dotenv
+## 🚀 Panduan Instalasi & Penggunaan
 
-Node.js
-- Express
-- Baileys
-- Pino
-- qrcode-terminal
+Proyek ini membutuhkan pemahaman dasar mengenai penggunaan terminal/command prompt. Pastikan komputer Anda sudah terinstal **Python 3.10+** dan **Node.js 18+**.
 
----
-
-# ⚙️ Instalasi
-
-## 1. Clone Repository
-
+### 1. Kloning Repositori
 ```bash
-git clone https://github.com/username/BotWatel.git
+git clone [https://github.com/username/BotWatel.git](https://github.com/username/BotWatel.git)
 cd BotWatel
+
 ```
-## 2. Setup Python Environment
+
+### 2. Konfigurasi Environment (`.env`)
+
+Buat sebuah file baru bernama `.env` di root folder utama proyek `BotWatel/`, lalu sesuaikan nilainya:
+
+```env
+# ==========================================
+# TELEGRAM CREDENTIALS (my.telegram.org)
+# ==========================================
+API_ID=12345678
+API_HASH=abcdef0123456789abcdef0123456789
+
+# TARGET CHATS (Pisahkan dengan koma jika multi-chat, kosongkan/DM otomatis masuk)
+TELEGRAM_TARGET_CHATS=123456789,-100123456789
+
+# ==========================================
+# WHATSAPP API & TARGET
+# ==========================================
+WA_API_URL=http://localhost:3000
+WA_TARGET_NUMBER=628123456789
+WA_COMMUNITY_ANNOUNCEMENT_NUMBER=628123456789-1600000000@g.us
+
+# ==========================================
+# DATABASE & SYSTEM LOG
+# ==========================================
+DATABASE_PATH=database/botwatel.db
+LOG_LEVEL=INFO
+
+```
+
+### 3. Setup Layanan WhatsApp (Node.js)
+
+Buka terminal baru, masuk ke folder modul WhatsApp, pasang dependensi, lalu jalankan servernya:
+
 ```bash
-python -m venv .venv
-.venv\Scripts\activate   # Windows
+cd whatsappProd
+npm install
+node server.js
+
 ```
-Install depedency
+
+*Catatan: Saat pertama kali dijalankan, terminal akan merender QR Code kecil. Buka WhatsApp HP Anda -> Perangkat Tertaut -> Scan QR tersebut. Sesi login akan disimpan secara permanen di dalam folder `sessions/`.*
+
+### 4. Setup Layanan Telegram & Core (Python)
+
+Buka terminal baru satu lagi (kembali ke root folder utama `BotWatel`), instal dependensi melalui file `requirements.txt`, lalu jalankan aplikasi utamanya:
+
 ```bash
 pip install -r requirements.txt
-```
-## 3. Setup Node.js (Whatsapp Service)
-Masuk folder:
-```bash
-cd whatsappProd
-```
-Install depedency
-```bash
-npm install
-```
-## Konfigurasi Telegram
-buat file .env:
-```env
-API_ID=12345678
-API_HASH=xxxxxxxxxxxxxxxxxxxx 
-```
-Dapatkan dari:
-https://my.telegram.org/
-
----
-
-# Cara Menjalankan
-## 1. Jalankan Whatsapp Service
-```bash
-cd whatsappProd
-node server.js
-```
-Scan QR Code:
-```
-Whatsapp -> Perangkat Tertaut -> Tautkan Perangkat
-```
-Session akan tersimpan di:
-```
-whatsappProd/sessions/
-```
-## 2. Jalankan Telegram Listener
-Gunakan terminal yang berbeda dan jalankan:
-```bash
 python app.py
-```
-Login Telegram:
-- Nomor HP
-- OTP Code
-- Password (Jika 2FA aktif)
 
-Session tersimpan:
 ```
-watel.session
-```
+
+*Catatan: Pada peluncuran pertama, Telethon di terminal akan meminta Anda memasukkan nomor HP (gunakan format internasional, misal: +628xxx) dan memasukkan kode OTP resmi yang dikirimkan oleh sistem Telegram.*
 
 ---
 
+## 🔌 REST API Reference (Node.js Service)
 
-# Download Media
+Server Node.js secara default berjalan di `http://localhost:3000` dan mengekspos endpoint HTTP yang ditembak oleh `sender.py` di sisi Python.
 
-Media Telegram akan disimpan dengan struktur
+### Mengirim Pesan
 
-```
-downloads/
+* **Endpoint:** `POST /send`
+* **Headers:** `Content-Type: application/json`
 
-Nama Chat/
-
-└── Tahun/
-
-    └── Bulan/
-
-        └── Tanggal/
-
-            ├── photo.jpg
-
-            ├── video.mp4
-
-            └── document.pdf
-```
-
----
-
-# REST API
-
-## Mengirim Pesan/Endpoint
-
-```
-POST /send
-```
-
-## Text Message
+#### Contoh Payload Pesan Teks:
 
 ```json
 {
   "number": "628123456789",
   "type": "text",
-  "text": "Halo dari BotWatel"
+  "text": "Halo dari BotWatel!"
 }
+
 ```
 
-## Image Message (Local File)
+#### Contoh Payload Pesan Gambar (File Lokal Absolut):
+
 ```json
 {
   "number": "628123456789",
   "type": "image",
-  "path": "C:/BotWatel/downloads/photo.jpg",
-  "caption": "dari Telegram"
+  "path": "C:/BotWatel/downloads/Group_A/2026/07/03/photo.jpg",
+  "caption": "Pesan gambar yang diteruskan dari Telegram"
 }
+
 ```
 
-## Response
+#### Response (Non-blocking):
 
 ```json
 {
   "success": true,
   "status": "queued"
 }
+
 ```
----
-
-# Roadmap
-
-## Telegram
-
-- [x] Login
-- [x] Listener
-- [x] Download Media
-
-## WhatsApp
-
-- [x] Login
-- [x] REST API
-- [x] Send Text
-
-## Bridge
-
-- [x] Telegram → WhatsApp (Text)
-- [x] Telegram → WhatsApp (Photo)
-- [x] Telegram → WhatsApp (Video)
-- [x] Telegram → WhatsApp (Document)
-- [ ] Telegram → WhatsApp (Voice)
-- [ ] Telegram → WhatsApp (GIF)
-
-## Future
-
-- [ ] WhatsApp → Telegram
-- [ ] SQLite Database
-- [ ] Logging
-- [ ] GUI Dashboard
-- [ ] Docker Support
 
 ---
 
-# Catatan
+## 🗺️ Roadmap Pengembangan
 
-Project ini menggunakan **akun pribadi Telegram** dan **akun pribadi WhatsApp**.
-
-BotWatel **bukan** menggunakan Telegram Bot API maupun WhatsApp Cloud API.
-
-Koneksi WhatsApp menggunakan **Baileys**, sehingga perubahan pada protokol WhatsApp sewaktu-waktu dapat memengaruhi proses login maupun pengiriman pesan.
+* [x] Login Telegram Userbot (Telethon)
+* [x] Listener & Filter Chat ID Telegram
+* [x] Auto-Download Media Telegram (Absolute Path & Sanitized Folder)
+* [x] Login WhatsApp Userbot (Baileys dengan Auth File State)
+* [x] Node.js REST API Server & Integrasi Multi-language (Python ↔ Node.js)
+* [x] Modular Message Pipeline Arsitektur
+* [x] Realtime Auto Translation (deep-translator)
+* [ ] Implementasi Database SQLite nyata pada `database_service`
+* [ ] Pengaktifan Modul `telegram_formatter` secara menyeluruh pada alur WhatsApp
+* [ ] Sinkronisasi Dua Arah Penuh (WhatsApp ↔ Telegram Bridge)
