@@ -75,11 +75,11 @@ Media yang diunduh dari Telegram akan otomatis tersimpan dengan struktur folder 
 
 downloads/
 └── [Nama Chat]/
-└── [Tahun]/
-└── [Bulan]/
-└── [Tanggal]/
-├── photo.jpg
-└── video.mp4
+    └── [Tahun]/
+        └── [Bulan]/
+            └── [Tanggal]/
+                ├── photo.jpg
+                └── video.mp4
 
 ```
 
