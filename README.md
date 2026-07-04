@@ -68,6 +68,12 @@ BotWatel/
 │   ├── downloader.py
 │   ├── listener.py
 │   └── message_handler.py
+├── tests/                  # Folder Pengujian Proyek
+│   ├── utils/
+│   │   └── get_ids.py      # Skrip pembantu untuk mencari ID Telegram (Group/Channel/DM)
+│   │   └── get_wa_ids.js   # Skrip pembantu mencari ID WhatsApp & Tipe Metadata (Node.js)
+│   ├── test_api.py         # Skrip pengujian REST API
+│   └── test_wa.py          # Skrip pengujian fungsionalitas WhatsApp
 └── whatsappProd/           # Modul WhatsApp (Server Node.js & REST API Driver)
     ├── client.js
     ├── package.json
@@ -83,11 +89,11 @@ Media yang diunduh dari Telegram akan otomatis tersimpan dengan struktur folder 
 
 downloads/
 └── [Nama Chat]/
-    └── [Tahun]/
-        └── [Bulan]/
-            └── [Tanggal]/
-                ├── photo.jpg
-                └── video.mp4
+     └── [Tahun]/
+          └── [Bulan]/
+               └── [Tanggal]/
+                    ├── photo.jpg
+                    └── video.mp4
 
 ```
 
@@ -159,6 +165,47 @@ python app.py
 *Catatan: Pada peluncuran pertama, Telethon di terminal akan meminta Anda memasukkan nomor HP (gunakan format internasional, misal: +628xxx) dan memasukkan kode OTP resmi yang dikirimkan oleh sistem Telegram.*
 
 ---
+
+## 🔍 Cara Mendapatkan ID Target (Telegram dan Whatsapp)
+
+Aplikasi ini memfilter pesan berdasarkan Chat ID yang didaftarkan pada file `.env`. Jika Anda bingung atau belum tahu berapa ID dari Group atau Channel target Anda, proyek ini menyediakan skrip pembantu di dalam folder `tests/utils/`.
+
+### Langkah Mencari ID Telegram:
+1. Pastikan Anda sudah melakukan setup dasar dan berhasil login Telegram pada pengujian pertama.
+2. Jalankan perintah berikut di terminal root proyek Anda:
+   ```bash
+   python tests/utils/get_tele_ids.py
+   ```
+3. Skrip akan membaca 20 riwayat obrolan terbaru akun Anda dan mencetaknya dengan format
+```
+Nama Chat : Kelompok Belajar C#
+Chat ID   : -100123456789
+Jenis     : 👥 Group
+```
+4. Salin angka Chat ID tersebut(termasuk tanda minus `-` jika ada grup/channel) lalu tempelkan ke variabel `TELEGRAM_TARGET_CHATS` di file `.env` Anda. 
+5. Untuk mencari atau mendapatkan ID Whatsapp (Group/Community Announcement), pastikan Anda sudah sukses melakukan scan QR Code pada server Node.js sebelumnya. Lalu jalankan salah satu perintah berikut:
+- Melihat seluruh grup Anda
+```bash
+node tests/utils/get_wa_ids.js
+```
+- Mencari berdasarkan nama grup tertentu (*Case-Sensitive*)
+```bash
+node tests/utils/get_wa_ids.js "Nama Komunitas Anda"
+```
+6. Skrip akan menampilkan metadata tipe grup secara jelas seperti berikut
+```
+Nama Grup : Karyawan Sentosa
+Chat ID   : 12036321234567890@g.us
+Metadata  : 📢 Announcement Group (Grup Pengumuman Komunitas)
+Total Member: 150
+--------------------------------------------------
+Nama Grup : Karyawan Sentosa
+Chat ID   : 628123456789-160000000@g.us
+Metadata  : 👥 Group Chat (Grup Biasa)
+Total Member: 45
+```
+7. Jika Anda menginginkan pesan dikirimkan ke **ANNOUNCEMENT GROUP**, salin Chat ID yang memiliki `Metadata: 📢 Announcement Group (Grup Pengumuman Komunitas)` (biasanya yang berakhiran @g.us).
+8. Tempelkan ID tersebut ke variabel `WA_COMMUNITY_ANNOUNCEMENT_NUMBER` pada file `.env` Anda agar bot bisa mengirim pesan tepat ke ruang pengumuman utama komunitas, bukan ke grup obrolan anggotanya. *Note : Pastikan Anda adalah Admin di Group Pengumumannya jika ingin Bot bisa mengirim pesan
 
 ## 🔌 REST API Reference (Node.js Service)
 
