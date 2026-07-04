@@ -7,7 +7,7 @@ def format_message(message: TelegramMessage) -> OutgoingMessage:
     
     # Header Laporan Forwarding
     lines.append("📨 *TELEGRAM FORWARD*")
-    lines.append(f"• *Chat:* {message.chat.name}")
+    # lines.append(f"• *Chat:* {message.chat.name}")
     lines.append(f"• *Sender:* {message.sender.name}")
     
     if message.sender.username:

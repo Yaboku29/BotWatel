@@ -120,16 +120,28 @@ class WhatsAppClient {
             }
 
             case "document": {
-
                 if (!fs.existsSync(path)) {
                     throw new Error("File tidak ditemukan: " + path);
                 }
 
                 const buffer = fs.readFileSync(path);
+                const filename = pathModule.basename(path);
+                
+                // Deteksi mimetype sederhana berdasarkan ekstensi file asli
+                let ext = pathModule.extname(path).toLowerCase();
+                let mimetype = "application/octet-stream"; // default jika tidak dikenal
+
+                if (ext === ".pdf") mimetype = "application/pdf";
+                else if (ext === ".png") mimetype = "image/png";
+                else if (ext === ".jpg" || ext === ".jpeg") mimetype = "image/jpeg";
+                else if (ext === ".zip") mimetype = "application/zip";
+                else if (ext === ".txt") mimetype = "text/plain";
+                else if (ext === ".docx") mimetype = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
                 return await this.sock.sendMessage(jid, {
                     document: buffer,
-                    fileName: pathModule.basename(path)
+                    mimetype: mimetype,
+                    fileName: filename // Menjaga nama file asli (misal: gambar.png) tetap utuh di WA
                 });
             }
 

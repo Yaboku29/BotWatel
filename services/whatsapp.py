@@ -1,74 +1,60 @@
 import os
 from pathlib import Path
-from whatsappProd.sender import (
-    send_text,
-    send_image,
-    send_video,
-    send_document
-)
-
+from whatsappProd.sender import send_text, send_image, send_video, send_document
 from config import WA_COMMUNITY_ANNOUNCEMENT_NUMBER
-# 1️⃣ Import fungsi formatter yang sudah kamu buat sebelumnya
 from formatter.telegram_formatter import format_message
+# Import fungsi update status
+from services.database import is_part_of_album, update_message_status 
 
 TARGET_NUMBER = WA_COMMUNITY_ANNOUNCEMENT_NUMBER
 
 async def process(message):
     try:
-        # 2️⃣ Gunakan formatter untuk mengubah TelegramMessage menjadi OutgoingMessage yang rapi
-        formatted_msg = format_message(message)
-        
-        # Ambil data teks hasil format dan informasi medianya
-        text_content = formatted_msg.text
-        media_path = formatted_msg.media_path
-        msg_type = str(formatted_msg.media_type).lower() if formatted_msg.media_type else "text"
+        msg_info = message.message
+        media_path = msg_info.file_path
+        msg_type = str(msg_info.type).lower()
 
-        # Hubungkan ke driver pengirim berdasarkan tipe medianya
+        # 1️⃣ Cek apakah ini bagian dari album (pesan beruntun)
+        is_album = is_part_of_album(message.chat.id, threshold_seconds=4)
+
+        # 2️⃣ Tentukan caption
+        if is_album:
+            caption_to_send = ""
+        else:
+            formatted_msg = format_message(message)
+            caption_to_send = formatted_msg.text
+
+        # 3️⃣ Kirim ke WhatsApp
         if msg_type == "text":
-            send_text(
-                TARGET_NUMBER,
-                text_content
-            )
+            send_text(TARGET_NUMBER, caption_to_send)
 
         elif msg_type == "photo":
             if not media_path or not Path(media_path).exists():
                 return
-            send_image(
-                TARGET_NUMBER,
-                str(media_path),
-                caption=text_content  # Teks laporan otomatis jadi caption gambar
-            )
+            send_image(TARGET_NUMBER, str(media_path), caption=caption_to_send)
 
         elif msg_type == "video":
             if not media_path or not Path(media_path).exists():
                 return
-            send_video(
-                TARGET_NUMBER,
-                str(media_path),
-                caption=text_content  # Teks laporan otomatis jadi caption video
-            )
+            send_video(TARGET_NUMBER, str(media_path), caption=caption_to_send)
 
         elif msg_type == "document":
             if not media_path or not Path(media_path).exists():
                 return
-            # Kirim dokumennya terlebih dahulu
-            send_document(
-                TARGET_NUMBER,
-                str(media_path)
-            )
-            # Kirim teks laporannya secara terpisah setelah dokumen terkirim
-            send_text(
-                TARGET_NUMBER,
-                text_content
-            )
+            send_document(TARGET_NUMBER, str(media_path))
+            if not is_album and caption_to_send:
+                send_text(TARGET_NUMBER, caption_to_send)
 
-        # 3️⃣ AUTO-CLEAN MEDIA: Hapus file lokal setelah dikirim ke REST API Node.js
+        # 4️⃣ PENTING: Tandai pesan ini sebagai 'PROCESSED' di database agar foto berikutnya tahu ada album
+        update_message_status(msg_info.id, message.chat.id, 'PROCESSED')
+
+        # 5️⃣ Auto-Clean
         if media_path and Path(media_path).exists():
             try:
                 os.remove(media_path)
-                print(f"🗑️ [Auto-Clean] Berhasil menghapus file lokal: {media_path}")
+                print(f"🗑️ [Auto-Clean] File dihapus: {Path(media_path).name}")
             except Exception as clean_err:
-                print(f"⚠️ [Auto-Clean] Gagal menghapus file: {str(clean_err)}")
+                print(f"⚠️ [Auto-Clean Gagal] {str(clean_err)}")
 
     except Exception as e:
-        print(f"❌ Error pada layanan WhatsApp Service: {str(e)}")
+        print(f"❌ Error pada WhatsApp Service: {str(e)}")
