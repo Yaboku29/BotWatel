@@ -16,6 +16,9 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 - **Realtime Translation:** Mendeteksi bahasa asing otomatis dan menerjemahkannya ke bahasa Inggris via Google Translate sebelum dikirim ke WhatsApp.
 - **Media Caption:** Mempertahankan teks caption asli pada media (foto/video) saat diteruskan.
 - **Non-Blocking REST API:** Mengirim pesan via HTTP POST ke server Node.js dengan sistem antrean latar belakang (*queued*) agar performa Python tetap responsif.
+- **Smart Album Detection:** Mendeteksi pengiriman album media beruntun dari Telegram secara pintar menggunakan SQLite, memastikan hanya gambar/video pertama yang membawa caption laporan panjang, sedangkan media berikutnya masuk sebagai kolase bersih di WhatsApp.
+- **Auto-Clean Media Storage:** Menghapus file media fisik lokal dari folder `downloads/` secara instan dan otomatis sesaat setelah berhasil diteruskan ke Node.js untuk menghemat penyimpanan disk.
+- **Dynamic Document Mimetype:** Mampu mengenali ekstensi asli dokumen (seperti berkas `.png` atau `.zip` yang dikirim sebagai berkas uncompressed) sehingga tidak rusak saat diunduh di WhatsApp.
 
 ---
 
@@ -210,6 +213,12 @@ Server Node.js secara default berjalan di `http://localhost:3000` dan mengekspos
 * [x] Node.js REST API Server & Integrasi Multi-language (Python ↔ Node.js)
 * [x] Modular Message Pipeline Arsitektur
 * [x] Realtime Auto Translation (deep-translator)
-* [ ] Implementasi Database SQLite nyata pada `database_service`
+* [x] Implementasi Database SQLite nyata pada `database_service`
 * [ ] Pengaktifan Modul `telegram_formatter` secara menyeluruh pada alur WhatsApp
 * [ ] Sinkronisasi Dua Arah Penuh (WhatsApp ↔ Telegram Bridge)
+
+### 🔍 Penanganan Masalah Sesi (Troubleshooting)
+Jika saat menjalankan `node server.js` Anda mendapati pesan error koneksi terputus mendadak atau sesi kedaluwarsa (Error 428 / 401), Anda dapat memicu ulang pemuatan QR Code baru dengan cara:
+1. Matikan proses terminal Node.js (`Ctrl + C`).
+2. Hapus folder `sessions/` yang berada di dalam folder proyek Anda.
+3. Jalankan kembali `node server.js`.
