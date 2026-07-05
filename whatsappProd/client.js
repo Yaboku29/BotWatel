@@ -29,10 +29,24 @@ class WhatsAppClient {
     }
 
     async createSocket() {
+        // 1️⃣ Tentukan path folder logs (naik 1 tingkat ke root project, lalu masuk folder logs)
+        const logDir = pathModule.join(__dirname, "../logs");
+        
+        // 2️⃣ Pastikan folder logs sudah terbuat secara fisik
+        if (!fs.existsSync(logDir)) {
+            fs.mkdirSync(logDir, { recursive: true });
+        }
+
+        // 3️⃣ Buat stream write khusus pino untuk menulis seluruh log detail Baileys ke file whatsapp.log
+        const fileLogger = P(
+            { level: "debug" }, // Mengubah dari "silent" ke "debug" agar semua histori internal tercatat di file log
+            fs.createWriteStream(pathModule.join(logDir, "whatsapp.log"), { flags: "a" }) // 'a' artinya append/menambah baris terus
+        );
+
         this.sock = makeWASocket({
             auth: this.state,
             browser: Browsers.ubuntu("BotWatel"),
-            logger: P({ level: "silent" })
+            logger: fileLogger // 4️⃣ Ganti pino bawaan dengan fileLogger kita
         });
 
         this.sock.ev.on("creds.update", this.saveCreds);

@@ -13,12 +13,17 @@ app.use(express.json());
 
         res.json({ success: true, status: "queued" });
 
+        // Mengambil target dan tipe dari body request untuk memperjelas info di terminal
+        const { number, type } = req.body;
+
         whatsapp.sendMessage(req.body)
             .then(result => {
-                console.log("SEND OK");
+                // Cetak ringkas saja di terminal agar tidak mengotori layar
+                console.log(`🚀 [Node API] Berhasil mengirim pesan (${type}) ke -> ${number}`);
             })
             .catch(err => {
-                console.error("SEND ERROR:", err.message);
+                // Log error ringkas untuk terminal
+                console.error(`❌ [Node API Error] Gagal kirim ke ${number}:`, err.message);
             });
 
     });

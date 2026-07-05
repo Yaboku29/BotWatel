@@ -18,7 +18,8 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 5. [🔍 Cara Mendapatkan ID Target](#-cara-mendapatkan-id-target-telegram-dan-whatsapp)
 6. [🔌 REST API Reference (Node.js Service)](#-rest-api-reference-nodejs-service)
 7. [🔍 Penanganan Masalah Sesi (Troubleshooting)](#-penanganan-masalah-sesi-troubleshooting)
-8. [🗺️ Roadmap Pengembangan](#️-roadmap-pengembangan)
+8. [📊 Cara Membaca Log & Monitoring Sistem](#-cara-membaca-log--monitoring-sistem)
+9. [🗺️ Roadmap Pengembangan](#️-roadmap-pengembangan)
 
 ---
 
@@ -35,6 +36,8 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 - **Smart Album Detection:** Mendeteksi pengiriman album media beruntun dari Telegram secara pintar menggunakan SQLite, memastikan hanya gambar/video pertama yang membawa caption laporan panjang, sedangkan media berikutnya masuk sebagai kolase bersih di WhatsApp.
 - **Auto-Clean Media Storage:** Menghapus file media fisik lokal dari folder `downloads/` secara instan dan otomatis sesaat setelah berhasil diteruskan ke Node.js untuk menghemat penyimpanan disk.
 - **Dynamic Document Mimetype:** Mampu mengenali ekstensi asli dokumen (seperti berkas `.png` atau `.zip` yang dikirim sebagai berkas uncompressed) sehingga tidak rusak saat diunduh di WhatsApp.
+- **Isolated Log System (NEW):** Mengalihkan seluruh log jaringan dan sistem internal yang ramai (Telethon & Baileys) ke dalam file terpisah di folder `logs/` agar layar terminal tetap bersih dan informatif.
+- **GUI Log Dashboard Integration (NEW):** Mendukung pelacakan status pesan (SUCCESS/FAILED) beserta alasan error secara visual menggunakan ekstensi SQLite Viewer, mempermudah pemantauan tanpa perlu membaca teks terminal yang menumpuk.
 
 ---
 
@@ -67,6 +70,9 @@ BotWatel/
 ├── requirements.txt        # Daftar dependensi library Python
 ├── database/               # Folder penyimpanan SQLite database (botwatel.db)
 ├── downloads/              # Folder penyimpanan media dari Telegram (diatur otomatis)
+├── logs/                   # Folder Log Terisolasi (Otomatis dibuat oleh sistem)
+│   ├── telegram.log        # Berisi log internal detail jaringan Telethon (Python)
+│   └── whatsapp.log        # Berisi log internal detail koneksi Baileys (Node.js)
 ├── formatter/              # Modul penyusun tampilan teks laporan pesan
 │   └── telegram_formatter.py
 ├── models/                 # Definisi struktur objek data (Dataclasses Python)
@@ -276,6 +282,27 @@ Jika saat menjalankan `node server.js` Anda mendapati pesan error koneksi terput
 2. Hapus folder `sessions/` yang berada di dalam folder proyek Anda.
 3. Jalankan kembali `node server.js`.
 
+---
+
+## 📊 Cara Membaca Log & Monitoring Sistem
+
+Aplikasi ini dirancang dengan prinsip **Clean Terminal Output**. Seluruh log teknis yang berisik dari Telegram dan WhatsApp secara otomatis diisolasi ke latar belakang, sehingga terminal Anda hanya akan menampilkan status konfirmasi ringkas saat ada pesan yang berhasil diteruskan.
+
+Jika Anda ingin melihat riwayat status pengiriman atau melacak error tertentu, Anda dapat melihatnya secara visual tanpa menggunakan terminal:
+
+### 1. Monitoring via GUI SQLite (Sangat Direkomendasikan)
+1. Instal ekstensi **SQLite Viewer** di VSCode Anda.
+2. Buka folder proyek ini di VSCode, lalu klik berkas database `database/botwatel.db`.
+3. Anda akan melihat tabel visual layaknya Excel yang memuat metadata pesan.
+4. Perhatikan kolom `status` (`SUCCESS` / `FAILED`). Jika ada pesan yang gagal, detail penyebab masalahnya akan tertulis secara lengkap pada kolom `error_message`.
+
+### 2. Melacak Error Teknis Koneksi (File Log)
+Jika bot tidak merespons atau koneksi terputus, Anda bisa langsung membuka folder `logs/` untuk membaca jejak masalahnya secara mendalam:
+* Lihat `logs/telegram.log` untuk masalah internal Telegram (misal: sesi habis atau pembatasan rate-limit).
+* Lihat `logs/whatsapp.log` untuk masalah internal WhatsApp (misal: kegagalan *handshake* jaringan Baileys atau masalah autentikasi QR).
+
+---
+
 ## 🗺️ Roadmap Pengembangan
 
 * [x] Login Telegram Userbot (Telethon)
@@ -286,5 +313,7 @@ Jika saat menjalankan `node server.js` Anda mendapati pesan error koneksi terput
 * [x] Modular Message Pipeline Arsitektur
 * [x] Realtime Auto Translation (deep-translator)
 * [x] Implementasi Database SQLite nyata pada `database_service`
+- [x] Sistem Logging Terisolasi (`logs/`) untuk Python & Node.js
+- [x] Pencatatan detail error pengiriman ke dalam database SQLite (`error_message`)
 * [ ] Pengaktifan Modul `telegram_formatter` secara menyeluruh pada alur WhatsApp
 * [ ] Sinkronisasi Dua Arah Penuh (WhatsApp ↔ Telegram Bridge)

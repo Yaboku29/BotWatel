@@ -10,6 +10,7 @@ def init_db():
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
     
+    # Menambahkan kolom error_message untuk menampung detail error
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS message_logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,7 +20,8 @@ def init_db():
             sender_name TEXT,
             message_type TEXT,
             timestamp TEXT,
-            status TEXT DEFAULT 'PENDING'
+            status TEXT DEFAULT 'PENDING',
+            error_message TEXT
         )
     """)
     conn.commit()
@@ -28,18 +30,14 @@ def init_db():
 init_db()
 
 def is_part_of_album(chat_id: int, threshold_seconds: int = 4) -> bool:
-    """Mengecek album HANYA pada pesan yang sudah sukses diproses sebelumnya."""
     try:
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
-        
-        # PENTING: Hanya cari yang statusnya 'PROCESSED'
         cursor.execute("""
             SELECT timestamp FROM message_logs 
-            WHERE chat_id = ? AND status = 'PROCESSED'
+            WHERE chat_id = ? AND status = 'SUCCESS'
             ORDER BY id DESC LIMIT 1
         """, (chat_id,))
-        
         row = cursor.fetchone()
         conn.close()
         
@@ -47,21 +45,20 @@ def is_part_of_album(chat_id: int, threshold_seconds: int = 4) -> bool:
             last_time = datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S")
             if (datetime.now() - last_time).total_seconds() <= threshold_seconds:
                 return True
-                
         return False
-    except Exception as e:
-        print(f"⚠️ [Database Check Album Error] {str(e)}")
+    except Exception:
         return False
 
-def update_message_status(telegram_msg_id: int, chat_id: int, status: str):
-    """Mengubah status pesan menjadi PROCESSED setelah selesai ditangani di whatsapp.py"""
+def update_message_status(telegram_msg_id: int, chat_id: int, status: str, error_msg: str = None):
+    """Mengupdate status akhir dari pesan (SUCCESS / FAILED) beserta pesan error-nya jika ada."""
     try:
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
         cursor.execute("""
-            UPDATE message_logs SET status = ? 
+            UPDATE message_logs 
+            SET status = ?, error_message = ? 
             WHERE telegram_msg_id = ? AND chat_id = ?
-        """, (status, telegram_msg_id, chat_id))
+        """, (status, error_msg, telegram_msg_id, chat_id))
         conn.commit()
         conn.close()
     except Exception as e:
@@ -75,23 +72,14 @@ async def database_service(message):
         msg_info = message.message
         chat_info = message.chat
         sender_info = message.sender
-        
         formatted_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Masuk pertama kali dengan status 'PENDING' agar tidak mengacaukan foto pertama
         cursor.execute("""
             INSERT INTO message_logs (telegram_msg_id, chat_id, chat_name, sender_name, message_type, timestamp, status)
             VALUES (?, ?, ?, ?, ?, ?, 'PENDING')
-        """, (
-            msg_info.id,
-            chat_info.id,
-            chat_info.name,
-            sender_info.name,
-            msg_info.type,
-            formatted_time
-        ))
+        """, (msg_info.id, chat_info.id, chat_info.name, sender_info.name, msg_info.type, formatted_time))
         
         conn.commit()
         conn.close()
     except Exception as e:
-        print(f"⚠️ [Database Error] Gagal menyimpan log: {str(e)}")
+        print(f"⚠️ [Database Error] {str(e)}")

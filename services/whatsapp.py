@@ -46,15 +46,20 @@ async def process(message):
                 send_text(TARGET_NUMBER, caption_to_send)
 
         # 4️⃣ PENTING: Tandai pesan ini sebagai 'PROCESSED' di database agar foto berikutnya tahu ada album
-        update_message_status(msg_info.id, message.chat.id, 'PROCESSED')
+        # ... (logika pengecekan album dan fungsi send_image/text seperti sebelumnya) ...
 
-        # 5️⃣ Auto-Clean
-        if media_path and Path(media_path).exists():
-            try:
-                os.remove(media_path)
-                print(f"🗑️ [Auto-Clean] File dihapus: {Path(media_path).name}")
-            except Exception as clean_err:
-                print(f"⚠️ [Auto-Clean Gagal] {str(clean_err)}")
+        # Jika berhasil sampai ke baris ini tanpa terlempar ke blok except:
+        update_message_status(msg_info.id, message.chat.id, 'SUCCESS')
+        print(f"✅ [Forward Success] Pesan ID {msg_info.id} berhasil diteruskan.")
 
     except Exception as e:
-        print(f"❌ Error pada WhatsApp Service: {str(e)}")
+        # Jika terjadi error (misal Node.js mati, file korup, dll), catat detail errornya ke database
+        error_details = str(e)
+        update_message_status(msg_info.id, message.chat.id, 'FAILED', error_msg=error_details)
+        print(f"❌ [Forward Failed] Pesan ID {msg_info.id} gagal: {error_details}")
+        
+    finally:
+        # Auto-clean tetap berjalan agar storage aman
+        if media_path and Path(media_path).exists():
+            try: os.remove(media_path)
+            except: pass

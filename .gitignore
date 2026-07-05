@@ -9,6 +9,7 @@ __pycache__/
 
 # Telethon Session
 *.session
+sessions
 *.session-journal
 
 # Download
