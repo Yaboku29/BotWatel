@@ -188,6 +188,24 @@ python app.py
 
 *Catatan: Pada peluncuran pertama, Telethon di terminal akan meminta Anda memasukkan nomor HP (gunakan format internasional, misal: +628xxx) dan memasukkan kode OTP resmi yang dikirimkan oleh sistem Telegram.*
 
+## 🚀 Cara Menjalankan BotWatel (Windows OS)
+
+Proyek ini telah dilengkapi dengan berkas otomatisasi peluncur (*launcher*) bernama `run.bat` di root folder. Fitur ini dirancang untuk mempermudah eksekusi ekosistem BotWatel tanpa perlu membuka banyak tab atau mengetik perintah terminal yang panjang secara manual.
+
+### Langkah Cepat Menjalankan Aplikasi:
+
+1. Buka proyek **BotWatel** di VSCode Anda.
+2. Buka terminal bawaan VSCode (pastikan menggunakan **PowerShell**).
+3. Jalankan perintah ringkas berikut:
+```powershell
+   ./run
+```
+#### 🧠 Apa yang Terjadi di Latar Belakang?
+Begitu perintah ./run dieksekusi, skrip akan secara otomatis memecah proses dan membuka dua jendela terminal PowerShell baru di luar VSCode secara instan:
+
+1. Jendela 1 (BotWatel - WhatsApp Service): Otomatis menyalakan server Express API dan mengaktifkan REST API Node.js/Baileys.
+
+2. Jendela 2 (BotWatel - Telegram Service): Otomatis masuk dan mengaktifkan lingkungan Virtual Environment (venv), lalu mengeksekusi Core Engine Python/Telethon.
 ---
 
 ## 🔍 Cara Mendapatkan ID Target (Telegram dan Whatsapp)
