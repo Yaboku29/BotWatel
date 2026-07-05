@@ -28,7 +28,7 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 - **Userbot Engine:** Berjalan menggunakan akun Telegram pribadi (via Telethon) dan WhatsApp pribadi (via Baileys).
 - **Realtime Listener:** Memonitor pesan masuk dari DM (Private Chat), Group, maupun Channel Telegram secara instan.
 - **Target Filtering:** Memfilter sumber pesan masuk berdasarkan Chat ID Telegram yang dikonfigurasi pada file `.env`.
-- **Auto-Download Media:** Mengunduh media Telegram otomatis (Foto, Video, Dokumen, Voice (*SOON*), Audio (*SOON*), Sticker (*SOON*), GIF (*SOON*) dan menyimpannya ke folder lokal.
+- **Auto-Download Media:** Mengunduh media Telegram otomatis (Foto, Video, Dokumen, Voice (*SOON*), Audio (*SOON*), Sticker (*SOON*), GIF (*SOON*)) dan menyimpannya ke folder lokal.
 - **Pipeline Architecture:** Menggunakan pola desain modular (*Chain of Responsibility*) sehingga mempermudah penambahan layanan baru (Logger, DB, Translator, Formatter).
 - **Realtime Translation:** Mendeteksi bahasa asing otomatis dan menerjemahkannya ke bahasa Inggris via Google Translate sebelum dikirim ke WhatsApp.
 - **Media Caption:** Mempertahankan teks caption asli pada media (foto/video) saat diteruskan.
@@ -36,8 +36,8 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 - **Smart Album Detection:** Mendeteksi pengiriman album media beruntun dari Telegram secara pintar menggunakan SQLite, memastikan hanya gambar/video pertama yang membawa caption laporan panjang, sedangkan media berikutnya masuk sebagai kolase bersih di WhatsApp.
 - **Auto-Clean Media Storage:** Menghapus file media fisik lokal dari folder `downloads/` secara instan dan otomatis sesaat setelah berhasil diteruskan ke Node.js untuk menghemat penyimpanan disk.
 - **Dynamic Document Mimetype:** Mampu mengenali ekstensi asli dokumen (seperti berkas `.png` atau `.zip` yang dikirim sebagai berkas uncompressed) sehingga tidak rusak saat diunduh di WhatsApp.
-- **Isolated Log System (NEW):** Mengalihkan seluruh log jaringan dan sistem internal yang ramai (Telethon & Baileys) ke dalam file terpisah di folder `logs/` agar layar terminal tetap bersih dan informatif.
-- **GUI Log Dashboard Integration (NEW):** Mendukung pelacakan status pesan (SUCCESS/FAILED) beserta alasan error secara visual menggunakan ekstensi SQLite Viewer, mempermudah pemantauan tanpa perlu membaca teks terminal yang menumpuk.
+- **Isolated Log System:** Mengalihkan seluruh log jaringan dan sistem internal yang ramai (Telethon & Baileys) ke dalam file terpisah di folder `logs/` agar layar terminal tetap bersih dan informatif.
+- **GUI Log Dashboard Integration:** Mendukung pelacakan status pesan (SUCCESS/FAILED) beserta alasan error secara visual menggunakan ekstensi SQLite Viewer, mempermudah pemantauan tanpa perlu membaca teks terminal yang menumpuk.
 
 ---
 
@@ -67,6 +67,7 @@ BotWatel/
 ├── .env.example            # Template cetakan konfigurasi environment (Salin menjadi .env)
 ├── app.py                  # Entry point utama aplikasi Python
 ├── config.py               # Pengelola konfigurasi & pemetaan variabel .env
+├── run.bat                 # Skrip otomatisasi peluncur (Launcher) sekali klik
 ├── requirements.txt        # Daftar dependensi library Python
 ├── database/               # Folder penyimpanan SQLite database (botwatel.db)
 ├── downloads/              # Folder penyimpanan media dari Telegram (diatur otomatis)
@@ -194,18 +195,38 @@ Proyek ini telah dilengkapi dengan berkas otomatisasi peluncur (*launcher*) bern
 
 ### Langkah Cepat Menjalankan Aplikasi:
 
-1. Buka proyek **BotWatel** di VSCode Anda.
-2. Buka terminal bawaan VSCode (pastikan menggunakan **PowerShell**).
-3. Jalankan perintah ringkas berikut:
-```powershell
-   ./run
+1. Buka Proyek BotWatel di VSCode atau juga bisa langsung di terminal:
+```bash
+[drive]:\...\BotWatel>
 ```
+2. Jika sudah di VSCode bisa jalankan perintah berdasarkan OS Device Anda:
+- Windows Powershell
+
+```powershell
+./run
+```
+
+- Terminal (macOS dan Linux)
+
+```bash
+cmod +x run.sh # Lakukan saat pertama kali menjalankan
+/run.sh # untuk sehari-hari
+```
+
 #### 🧠 Apa yang Terjadi di Latar Belakang?
-Begitu perintah ./run dieksekusi, skrip akan secara otomatis memecah proses dan membuka dua jendela terminal PowerShell baru di luar VSCode secara instan:
 
-1. Jendela 1 (BotWatel - WhatsApp Service): Otomatis menyalakan server Express API dan mengaktifkan REST API Node.js/Baileys.
+Begitu perintah peluncur (`./run` atau `./run.sh`) dieksekusi, skrip akan secara otomatis memeriksa kesiapan sistem, memecah proses, dan membuka **dua jendela terminal baru** di luar VSCode secara instan:
 
-2. Jendela 2 (BotWatel - Telegram Service): Otomatis masuk dan mengaktifkan lingkungan Virtual Environment (venv), lalu mengeksekusi Core Engine Python/Telethon.
+1. **Jendela 1 (`BotWatel - WhatsApp Service`):** 
+   - **Windows:** Membuka jendela PowerShell baru.
+   - **macOS/Linux:** Membuka jendela aplikasi Terminal bawaan sistem.
+   - **Tugas:** Otomatis masuk ke folder `whatsappProd`, memeriksa folder `node_modules` (melakukan `npm install` jika belum ada), lalu menyalakan server Express API dan mengaktifkan REST API Node.js/Baileys.
+
+2. **Jendela 2 (`BotWatel - Telegram Service`):** 
+   - **Windows:** Membuka jendela PowerShell baru kedua.
+   - **macOS/Linux:** Membuka jendela aplikasi Terminal bawaan sistem kedua.
+   - **Tugas:** Otomatis memeriksa lingkungan Virtual Environment (membuat `venv` baru & menginstal library dari `requirements.txt` jika belum ada), mengaktifkan lingkungan `venv` tersebut, lalu mengeksekusi Core Engine Python/Telethon (`python app.py`).
+
 ---
 
 ## 🔍 Cara Mendapatkan ID Target (Telegram dan Whatsapp)
@@ -213,27 +234,37 @@ Begitu perintah ./run dieksekusi, skrip akan secara otomatis memecah proses dan 
 Aplikasi ini memfilter pesan berdasarkan Chat ID yang didaftarkan pada file `.env`. Jika Anda bingung atau belum tahu berapa ID dari Group atau Channel target Anda, proyek ini menyediakan skrip pembantu di dalam folder `tests/utils/`.
 
 ### Langkah Mencari ID Telegram & Whatsapp:
+
 1. Pastikan Anda sudah melakukan setup dasar dan berhasil login Telegram pada pengujian pertama.
+
 2. Jalankan perintah berikut di terminal root proyek Anda:
+
    ```bash
    python tests/utils/get_tele_ids.py
    ```
+
 3. Skrip akan membaca 20 riwayat obrolan terbaru akun Anda dan mencetaknya dengan format
+
 ```
 Nama Chat : Kelompok Belajar C#
 Chat ID   : -100123456789
 Jenis     : 👥 Group
 ```
+
 4. Salin angka Chat ID tersebut(termasuk tanda minus `-` jika ada grup/channel) lalu tempelkan ke variabel `TELEGRAM_TARGET_CHATS` di file `.env` Anda. 
+
 5. Untuk mencari atau mendapatkan ID Whatsapp (Group/Community Announcement), pastikan Anda sudah sukses melakukan scan QR Code pada server Node.js sebelumnya. Lalu jalankan salah satu perintah berikut:
+
 - Melihat seluruh grup Anda
 ```bash
 node tests/utils/get_wa_ids.js
 ```
+
 - Mencari berdasarkan nama grup tertentu (*Case-Sensitive*)
 ```bash
 node tests/utils/get_wa_ids.js "Nama Komunitas Anda"
 ```
+
 6. Skrip akan menampilkan metadata tipe grup secara jelas seperti berikut
 ```
 Nama Grup : Karyawan Sentosa
@@ -333,5 +364,6 @@ Jika bot tidak merespons atau koneksi terputus, Anda bisa langsung membuka folde
 * [x] Implementasi Database SQLite nyata pada `database_service`
 - [x] Sistem Logging Terisolasi (`logs/`) untuk Python & Node.js
 - [x] Pencatatan detail error pengiriman ke dalam database SQLite (`error_message`)
-* [ ] Pengaktifan Modul `telegram_formatter` secara menyeluruh pada alur WhatsApp
-* [ ] Sinkronisasi Dua Arah Penuh (WhatsApp ↔ Telegram Bridge)
+- [x] Otomatisasi instalasi dependensi via Skrip Launcher Sekali Klik(`run.bat`)
+- [ ] Pengaktifan Modul `telegram_formatter` secara menyeluruh pada alur WhatsApp
+- [ ] Sinkronisasi Dua Arah Penuh (WhatsApp ↔ Telegram Bridge)
