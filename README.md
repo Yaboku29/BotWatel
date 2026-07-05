@@ -15,7 +15,7 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
    - [Langkah 2: Inisialisasi Environment Awal](#2-konfigurasi-environment-env)
    - [Langkah 3: Setup & Login WhatsApp (Node.js)](#3-setup-layanan-whatsapp-nodejs)
    - [Langkah 4: Setup & Login Telegram (Python)](#4-setup-layanan-telegram--core-python)
-5. [🔍 Cara Mendapatkan ID Target](#-cara-mendapatkan-id-target-telegram--whatsapp)
+5. [🔍 Cara Mendapatkan ID Target](#-cara-mendapatkan-id-target-telegram-dan-whatsapp)
 6. [🔌 REST API Reference (Node.js Service)](#-rest-api-reference-nodejs-service)
 7. [🔍 Penanganan Masalah Sesi (Troubleshooting)](#-penanganan-masalah-sesi-troubleshooting)
 8. [🗺️ Roadmap Pengembangan](#️-roadmap-pengembangan)
