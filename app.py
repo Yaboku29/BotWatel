@@ -6,7 +6,7 @@ from telegramProd.listener import register_listener
 
 from pipeline.pipeline import MessagePipeline
 
-from services.logger import logger_service
+# 💡 services/logger sengaja tidak diimpor karena sudah tidak digunakan
 from services.whatsapp import process
 from services.database import database_service
 from services.translator import process_TL
@@ -18,11 +18,11 @@ if not LOG_DIR.exists():
 
 # 2️⃣ Konfigurasi logging Python untuk dialihkan ke file logs/telegram.log
 logging.basicConfig(
-    level=logging.WARNING, # Menggunakan WARNING agar terminal tidak banjir log internal Telethon
+    level=logging.WARNING, 
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(LOG_DIR / "telegram.log", encoding="utf-8"), # Menulis log detail ke file
-        logging.StreamHandler() # Tetap memunculkan Error kritis di terminal jika ada
+        logging.FileHandler(LOG_DIR / "telegram.log", encoding="utf-8"), 
+        logging.StreamHandler() 
     ]
 )
 
@@ -31,7 +31,10 @@ async def main():
 
     pipeline = MessagePipeline()
 
-    pipeline.register(logger_service)
+    # 🛠️ PERUBAHAN DI SINI:
+    # Kita hapus/komentari baris pipeline.register(logger_service)
+    # pipeline.register(logger_service) 
+    
     pipeline.register(database_service)
     pipeline.register(process_TL)
     pipeline.register(process)

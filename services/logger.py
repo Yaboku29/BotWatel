@@ -1,11 +1,11 @@
-async def logger_service(message):
+# async def logger_service(message):
 
-    print("=" * 60)
+#     print("=" * 60)
 
-    # print(message.chat.name)
+#     # print(message.chat.name)
 
-    # print(message.sender.name)
+#     # print(message.sender.name)
 
-    print(message.message.text)
+#     # print(message.message.text)
 
-    print("=" * 60)
+#     print("=" * 60)

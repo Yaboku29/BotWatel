@@ -8,15 +8,15 @@ async def process_TL(message):
     if not original:
         return
 
-    print("=== Translator ===")
-    print(original)
+    # print("=== Translator ===")
+    # print(original)
 
     translated = GoogleTranslator(
         source="auto",
         target="en"
     ).translate(original)
 
-    print(translated)
+    # print(translated)
 
     message.message.text = (
         f"Original\n\n"
