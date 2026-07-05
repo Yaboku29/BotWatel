@@ -219,7 +219,7 @@ Proyek ini telah dilengkapi dengan berkas otomatisasi peluncur (*launcher*) bern
 ```bash
 [drive]:\...\BotWatel>
 ```
-2. Jika sudah di VSCode bisa jalankan perintah berdasarkan OS Device Anda:
+2. Jika sudah di directory yang sesuai (terminal atau VSCode), bisa jalankan perintah berdasarkan OS Device Anda:
 - Windows Powershell
 
 ```powershell
