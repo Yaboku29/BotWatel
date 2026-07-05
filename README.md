@@ -13,6 +13,8 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 4. [🚀 Panduan Instalasi & Penggunaan](#-panduan-instalasi--penggunaan)
    - [Langkah 1: Kloning Repositori](#1-kloning-repositori)
    - [Langkah 2: Inisialisasi Environment Awal](#2-konfigurasi-environment-env)
+    - [Tips Tambahan Pastikan `.env` Masuk `.gitignore`](#-tips-tambahan-pastikan-env-masuk-gitignore)
+    - [Cara Mendapatkan API ID dan API HASH Telegram](#-cara-mendapatkan-api-id--api-hash-telegram)
    - [Langkah 3: Setup & Login WhatsApp (Node.js)](#3-setup-layanan-whatsapp-nodejs)
    - [Langkah 4: Setup & Login Telegram (Python)](#4-setup-layanan-telegram--core-python)
 5. [🔍 Cara Mendapatkan ID Target](#-cara-mendapatkan-id-target-telegram-dan-whatsapp)
