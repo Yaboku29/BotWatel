@@ -5,6 +5,24 @@ BotWatel adalah aplikasi bridge (penghubung) otomatis antara **Telegram** dan **
 Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk meneruskan berbagai pesan secara realtime.
 
 ---
+## 📌 Daftar Isi
+
+1. [✨ Fitur Utama](#-fitur-utama)
+2. [🏗️ Arsitektur Sistem](#️-arsitektur-sistem)
+3. [📂 Struktur Properti & Folder](#-struktur-properti--folder)
+4. [🚀 Panduan Instalasi & Penggunaan](#-panduan-instalasi--penggunaan)
+   - [Langkah 1: Kloning Repositori](#1-kloning-repositori)
+   - [Langkah 2: Inisialisasi Environment Awal](#2-konfigurasi-environment-env)
+   - [Langkah 3: Setup & Login WhatsApp (Node.js)](#3-setup-layanan-whatsapp-nodejs)
+   - [Langkah 4: Setup & Login Telegram (Python)](#4-setup-layanan-telegram--core-python)
+5. [🔍 Cara Mendapatkan ID Target](#-cara-mendapatkan-id-target-telegram--whatsapp)
+   - [1. Mencari ID Chat Telegram](#1-mendapatkan-id-telegram-dm-group-channel)
+   - [2. Mencari ID Chat & Jenis Metadata WhatsApp](#2-mendapatkan-id-whatsapp-group--community-announcement)
+6. [🔌 REST API Reference (Node.js Service)](#-rest-api-reference-nodejs-service)
+7. [🔍 Penanganan Masalah Sesi (Troubleshooting)](#-penanganan-masalah-sesi-troubleshooting)
+8. [🗺️ Roadmap Pengembangan](#️-roadmap-pengembangan)
+
+---
 
 ## ✨ Fitur Utama
 
