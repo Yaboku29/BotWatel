@@ -128,7 +128,7 @@ Proyek ini membutuhkan pemahaman dasar mengenai penggunaan terminal/command prom
 
 ### 1. Kloning Repositori
 ```bash
-git clone [https://github.com/username/BotWatel.git](https://github.com/username/BotWatel.git)
+git clone [https://github.com/Yaboku29/BotWatel.git](https://github.com/Yaboku29/BotWatel.git)
 cd BotWatel
 
 ```
