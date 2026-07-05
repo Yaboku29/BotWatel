@@ -16,8 +16,6 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
    - [Langkah 3: Setup & Login WhatsApp (Node.js)](#3-setup-layanan-whatsapp-nodejs)
    - [Langkah 4: Setup & Login Telegram (Python)](#4-setup-layanan-telegram--core-python)
 5. [🔍 Cara Mendapatkan ID Target](#-cara-mendapatkan-id-target-telegram--whatsapp)
-   - [1. Mencari ID Chat Telegram](#1-mendapatkan-id-telegram-dm-group-channel)
-   - [2. Mencari ID Chat & Jenis Metadata WhatsApp](#2-mendapatkan-id-whatsapp-group--community-announcement)
 6. [🔌 REST API Reference (Node.js Service)](#-rest-api-reference-nodejs-service)
 7. [🔍 Penanganan Masalah Sesi (Troubleshooting)](#-penanganan-masalah-sesi-troubleshooting)
 8. [🗺️ Roadmap Pengembangan](#️-roadmap-pengembangan)
@@ -29,7 +27,7 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 - **Userbot Engine:** Berjalan menggunakan akun Telegram pribadi (via Telethon) dan WhatsApp pribadi (via Baileys).
 - **Realtime Listener:** Memonitor pesan masuk dari DM (Private Chat), Group, maupun Channel Telegram secara instan.
 - **Target Filtering:** Memfilter sumber pesan masuk berdasarkan Chat ID Telegram yang dikonfigurasi pada file `.env`.
-- **Auto-Download Media:** Mengunduh media Telegram otomatis (Foto, Video, Dokumen, Voice (*SOON*), Audio (*SOON*), Sticker (*SOON*), GIF (*SOON*)) dan menyimpannya ke folder lokal.
+- **Auto-Download Media:** Mengunduh media Telegram otomatis (Foto, Video, Dokumen, Voice (*SOON*), Audio (*SOON*), Sticker (*SOON*), GIF (*SOON*) dan menyimpannya ke folder lokal.
 - **Pipeline Architecture:** Menggunakan pola desain modular (*Chain of Responsibility*) sehingga mempermudah penambahan layanan baru (Logger, DB, Translator, Formatter).
 - **Realtime Translation:** Mendeteksi bahasa asing otomatis dan menerjemahkannya ke bahasa Inggris via Google Translate sebelum dikirim ke WhatsApp.
 - **Media Caption:** Mempertahankan teks caption asli pada media (foto/video) saat diteruskan.
