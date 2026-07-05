@@ -164,6 +164,26 @@ __pycache__/
 
 *Note: Jangan ubah isi `.env.example` dengan isi data yang krusial seperti API ataupun sejenisnya.
 
+#### 🔑 Cara Mendapatkan API ID & API Hash Telegram
+
+Untuk menghubungkan Userbot Python (Telethon) ke server Telegram, Anda memerlukan kredensial aplikasi resmi dari Telegram. Ikuti langkah mudah berikut:
+
+1. Buka browser dan masuk ke situs resmi: **[https://my.telegram.org](https://my.telegram.org)**.
+2. Masukkan nomor HP akun Telegram Anda (gunakan format internasional, misal: `+628xxxxxxxx`).
+3. Telegram akan mengirimkan **kode verifikasi/OTP** langsung ke aplikasi Telegram Anda (bukan via SMS). Masukkan kode tersebut untuk login.
+4. Setelah berhasil masuk, klik menu **"API development tools"**.
+5. Isi formulir pembuatan aplikasi baru:
+   - **App title:** Bebas (misal: `BotWatel Engine`)
+   - **Short name:** Bebas (misal: `botwatel`)
+   - Bagian URL atau deskripsi bisa Anda kosongi atau isi seadanya.
+6. Klik **"Create application"**.
+7. Anda akan melihat data **`App api_id`** (berupa angka) dan **`App api_hash`** (berupa kombinasi huruf & angka acak).
+8. Salin kedua nilai tersebut, lalu tempelkan ke file `.env` Anda:
+```env
+   API_ID=12345678          # Ganti dengan api_id Anda
+   API_HASH=abcdef123456... # Ganti dengan api_hash Anda
+```
+
 ### 3. Setup Layanan WhatsApp (Node.js)
 
 Buka terminal baru, masuk ke folder modul WhatsApp, pasang dependensi, lalu jalankan servernya:
@@ -261,11 +281,13 @@ node tests/utils/get_wa_ids.js
 ```
 
 - Mencari berdasarkan nama grup tertentu (*Case-Sensitive*)
+
 ```bash
 node tests/utils/get_wa_ids.js "Nama Komunitas Anda"
 ```
 
 6. Skrip akan menampilkan metadata tipe grup secara jelas seperti berikut
+
 ```
 Nama Grup : Karyawan Sentosa
 Chat ID   : 12036321234567890@g.us
@@ -277,6 +299,7 @@ Chat ID   : 628123456789-160000000@g.us
 Metadata  : 👥 Group Chat (Grup Biasa)
 Total Member: 45
 ```
+
 7. Jika Anda menginginkan pesan dikirimkan ke **ANNOUNCEMENT GROUP**, salin Chat ID yang memiliki `Metadata: 📢 Announcement Group (Grup Pengumuman Komunitas)` (biasanya yang berakhiran @g.us).
 8. Tempelkan ID tersebut ke variabel `WA_COMMUNITY_ANNOUNCEMENT_NUMBER` pada file `.env` Anda agar bot bisa mengirim pesan tepat ke ruang pengumuman utama komunitas, bukan ke grup obrolan anggotanya. *Note : Pastikan Anda adalah Admin di Group Pengumumannya jika ingin Bot bisa mengirim pesan
 
