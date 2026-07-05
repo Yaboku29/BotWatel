@@ -61,7 +61,7 @@ Saat ini, sistem diimplementasikan satu arah (**Telegram → WhatsApp**) untuk m
 ```
 
 BotWatel/
-├── .env                    # File konfigurasi kredensial & environment variable
+├── .env.example            # Template cetakan konfigurasi environment (Salin menjadi .env)
 ├── app.py                  # Entry point utama aplikasi Python
 ├── config.py               # Pengelola konfigurasi & pemetaan variabel .env
 ├── requirements.txt        # Daftar dependensi library Python
@@ -128,32 +128,34 @@ cd BotWatel
 
 ### 2. Konfigurasi Environment (`.env`)
 
-Buat sebuah file baru bernama `.env` di root folder utama proyek `BotWatel/`, lalu sesuaikan nilainya:
+Untuk membuat `.env` cukup menyalin dari `.env.example`.
+Bisa dengan duplicate dan rename menjadi `.env` atau dengan Terminal :
 
-```env
-# ==========================================
-# TELEGRAM CREDENTIALS (my.telegram.org)
-# ==========================================
-API_ID=12345678
-API_HASH=abcdef0123456789abcdef0123456789
-
-# TARGET CHATS (Pisahkan dengan koma jika multi-chat, kosongkan/DM otomatis masuk)
-TELEGRAM_TARGET_CHATS=123456789,-100123456789
-
-# ==========================================
-# WHATSAPP API & TARGET
-# ==========================================
-WA_API_URL=http://localhost:3000
-WA_TARGET_NUMBER=628123456789
-WA_COMMUNITY_ANNOUNCEMENT_NUMBER=628123456789-1600000000@g.us
-
-# ==========================================
-# DATABASE & SYSTEM LOG
-# ==========================================
-DATABASE_PATH=database/botwatel.db
-LOG_LEVEL=INFO
-
+- **Linux/macOS**
+```bash
+cp .env.example .env
 ```
+
+- **Windows Powershell**
+```bash
+copy .env.example .env
+```
+
+- **VSCode/File Explorer**: klik kanan pada file `env.example`, pilih Duplicate/Copy, lalu ganti namanya *(Rename)* menjadi `.env`.
+
+#### 📌 Tips Tambahan: Pastikan `.env` Masuk `.gitignore`
+
+Karena file `.env` yang asli akan berisi data rahasia akunmu, pastikan di dalam proyekmu sudah ada file bernama **`.gitignore`** di root folder yang berisi baris berikut:
+
+```text
+.env
+database/botwatel.db
+downloads/
+whatsappProd/sessions/
+__pycache__/
+```
+
+*Note: Jangan ubah isi `.env.example` dengan isi data yang krusial seperti API ataupun sejenisnya.
 
 ### 3. Setup Layanan WhatsApp (Node.js)
 
