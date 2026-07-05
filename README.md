@@ -186,7 +186,7 @@ python app.py
 
 Aplikasi ini memfilter pesan berdasarkan Chat ID yang didaftarkan pada file `.env`. Jika Anda bingung atau belum tahu berapa ID dari Group atau Channel target Anda, proyek ini menyediakan skrip pembantu di dalam folder `tests/utils/`.
 
-### Langkah Mencari ID Telegram:
+### Langkah Mencari ID Telegram & Whatsapp:
 1. Pastikan Anda sudah melakukan setup dasar dan berhasil login Telegram pada pengujian pertama.
 2. Jalankan perintah berikut di terminal root proyek Anda:
    ```bash
