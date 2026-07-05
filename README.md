@@ -267,6 +267,13 @@ Server Node.js secara default berjalan di `http://localhost:3000` dan mengekspos
 
 ---
 
+
+### 🔍 Penanganan Masalah Sesi (Troubleshooting)
+Jika saat menjalankan `node server.js` Anda mendapati pesan error koneksi terputus mendadak atau sesi kedaluwarsa (Error 428 / 401), Anda dapat memicu ulang pemuatan QR Code baru dengan cara:
+1. Matikan proses terminal Node.js (`Ctrl + C`).
+2. Hapus folder `sessions/` yang berada di dalam folder proyek Anda.
+3. Jalankan kembali `node server.js`.
+
 ## 🗺️ Roadmap Pengembangan
 
 * [x] Login Telegram Userbot (Telethon)
@@ -279,9 +286,3 @@ Server Node.js secara default berjalan di `http://localhost:3000` dan mengekspos
 * [x] Implementasi Database SQLite nyata pada `database_service`
 * [ ] Pengaktifan Modul `telegram_formatter` secara menyeluruh pada alur WhatsApp
 * [ ] Sinkronisasi Dua Arah Penuh (WhatsApp ↔ Telegram Bridge)
-
-### 🔍 Penanganan Masalah Sesi (Troubleshooting)
-Jika saat menjalankan `node server.js` Anda mendapati pesan error koneksi terputus mendadak atau sesi kedaluwarsa (Error 428 / 401), Anda dapat memicu ulang pemuatan QR Code baru dengan cara:
-1. Matikan proses terminal Node.js (`Ctrl + C`).
-2. Hapus folder `sessions/` yang berada di dalam folder proyek Anda.
-3. Jalankan kembali `node server.js`.
